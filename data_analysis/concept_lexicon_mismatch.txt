@@ -1,0 +1,5 @@
+These concepts are part of the train data but not part of the test data:
+person.nationality
+movie.description
+These concepts are part of the test data but not part of the train data:
+movie.type
