@@ -115,6 +115,11 @@ def w2vfeatures(sent, i):
         w2vp3 = get_w2v_embedding(sent[i + 3][0])
         for j in range(len(w2vp3)):
             features["w2vp3_%i" % j] = w2vp3[j]
+
+    if i < len(sent) - 4:
+        w2vp4 = get_w2v_embedding(sent[i + 4][0])
+        for j in range(len(w2vp4)):
+            features["w2vp4_%i" % j] = w2vp4[j]
     return features
 
 
@@ -143,87 +148,66 @@ def other_features(sent, i):
     """
     features = dict()
     word = sent[i][0]
-    pos = sent[i][0]
+    pos = sent[i][1]
+    lemma = sent[i][2]
 
-    features['bias'] = 1
     features['word'] = word
     features['word[-3]'] = word[-3:]
-    features['word[-2]'] = word[-2:]
-    features['word[-1]'] = word[-1:]
     features['word[3]'] = word[:3]
-    features['word[2]'] = word[:2]
-    features['word[1]'] = word[:1]
+    features["lemma"] = lemma
     features["pos"] = pos
     features["word-pos"] = word + pos
 
     # words before the current
     if i > 0:
-        word1 = sent[i - 1][0]
-        pos1 = sent[i - 1][1]
-        features["-1-word"] = word1
-        features["-1-pos"] = pos1
-        features["-1-1-word-word"] = word1 + word
-        features["-1-0-pos"] = pos1 + pos
-        features["-1-1-word-pos"] = word1 + pos1
-
-        features['-1-word[-3]'] = word1[-3:]
-        features['-1-word[3]'] = word1[:3]
+        wordm1 = sent[i - 1][0]
+        posm1 = sent[i - 1][1]
+        prem1 = sent[i - 1][0][:3]
+        features["-1-word"] = wordm1
+        features["-1-pos"] = posm1
+        features["-1-pre"] = prem1
+        features["-1-conj"] = wordm1 + word
     else:
         features['BOS'] = 1
 
     if i > 1:
-        word1 = sent[i - 1][0]
-        pos1 = sent[i - 1][1]
-        word2 = sent[i - 2][0]
-        pos2 = sent[i - 2][1]
+        wordm2 = sent[i - 2][0]
 
-        features["-2-word"] = word2
-        features["-2-pos"] = pos2
-        features["-2-1-pos-pos"] = pos2 + pos1
-        features["-2-1-0-pos-pos"] = pos2 + pos1 + pos
-
-        features['-2word[-3]'] = word2[-3:]
-        features['-2-word[3]'] = word2[:3]
+        features["-2-word"] = wordm2
 
     if i > 2:
         wordm3 = sent[i - 3][0]
-        posm3 = sent[i - 3][1]
 
-        features["3-pos"] = posm3
-        features['-3-word[-3]'] = wordm3[-3:]
-        features['-3-word[3]'] = wordm3[:3]
+        features["-3-word"] = wordm3
+
+    if i > 3:
+        wordm4 = sent[i - 4][0]
+
+        features["-4-word"] = wordm4
 
     # words after the current
     if i < len(sent) - 1:
-        wordm1 = sent[i - 1][0]
-        posm1 = sent[i - 1][1]
-        word1 = sent[i + 1][0]
-        pos1 = sent[i + 1][1]
+        wordp1 = sent[i + 1][0]
 
-        features["1-word"] = word1
-        features["1-pos"] = pos1
-        features["0-1-word-word"] = word + word1
-        features["0-1-pos-pos"] = pos + pos1
-        if i > 0:
-            features["-1-0-1-pos-pos-pos"] = posm1 + pos + pos1
-
-        features['1-word[-3]'] = word1[-3:]
-        features['1-word[3]'] = word1[:3]
+        features["1-word"] = wordp1
+        features["1-conj"] = word + wordp1
     else:
         features['EOS'] = 1
 
     if i < len(sent) - 2:
-        word1 = sent[i + 1][0]
-        pos1 = sent[i + 1][1]
-        word2 = sent[i + 2][0]
-        pos2 = sent[i + 2][1]
+        wordp2 = sent[i + 2][0]
 
-        features["2-word"] = word2
-        features["2-pos"] = pos2
-        features["0-1-2-pos-pos-pos"] = pos + pos1 + pos2
+        features["2-word"] = wordp2
 
-        features['2-word[-3]'] = word2[-3:]
-        features['2-word[3]'] = word2[:3]
+    if i < len(sent) - 3:
+        wordp3 = sent[i + 3][0]
+
+        features["3-word"] = wordp3
+
+    if i < len(sent) - 4:
+        wordp4 = sent[i + 4][0]
+
+        features["4-word"] = wordp4
 
     return features
 
@@ -279,12 +263,12 @@ if __name__ == "__main__":
 
     trainer.set_params({
         'c1': 0.0,  # coefficient for L1 penalty
-        'c2': 0.35,  # coefficient for L2 penalty 0.2
+        'c2': 0.20,  # coefficient for L2 penalty 0.2
         'num_memories': 100,
-        'max_iterations': 200,  # stop earlier
+        'max_iterations': 100,  # stop earlier
         'max_linesearch': 20,
-        'feature.possible_states': 0,
-        'feature.possible_transitions': 0,
+        'feature.possible_states': 1,
+        'feature.possible_transitions': 1,
 
     })
 
