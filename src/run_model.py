@@ -13,7 +13,7 @@ from torch.utils.data import DataLoader
 
 import data_manager
 from data_manager import pytorch_dataset, w2v_matrix_vocab_generator
-from models import recurrent,lstm_2ch, encoder, attention, conv, init_hidden, lstmcrf
+from models import recurrent, lstm_2ch, encoder, attention, conv, init_hidden, lstmcrf
 
 
 def worker_init(*args):
@@ -53,7 +53,7 @@ def predict(model, train_data):
     return y_predicted
 
 
-def write_predictions(tokens, labels, predictions, path, indexed_labels=True):
+def write_predictions(tokens, labels, predictions, path, indexed_labels, class_vocab):
     """
     Write predictions to file.
     :param tokens:
@@ -63,7 +63,7 @@ def write_predictions(tokens, labels, predictions, path, indexed_labels=True):
     :param indexed_labels:
     :return:
     """
-    index_to_class = {v: k for k, v in data_manager.class_vocab.items()}
+    index_to_class = {v: k for k, v in class_vocab.items()}
     with open(path, "w") as file:
         for tokens_seq, labels_seq, predictions_seq in zip(tokens, labels, predictions):
             for word, concept, predicted_concept in zip(tokens_seq, labels_seq, predictions_seq):
@@ -118,7 +118,9 @@ def evaluate_model(dev_data, model, batch_size):
 
     print("Dev stats:")
     # evaluate by calling the evaluation script then clean up
-    write_predictions(y_true, y_true, y_predicted, "../output/dev_pred.txt")
+    if params["dataset"] == "movies":
+        class_vocab = data_manager.class_vocab_movies
+    write_predictions(y_true, y_true, y_predicted, "../output/dev_pred.txt", True, class_vocab)
     os.system("../output/conlleval.pl < ../output/dev_pred.txt | head -n2")
     os.system("rm ../output/dev_pred.txt")
 
@@ -226,13 +228,15 @@ def explain_usage(models, sequences):
     print("--hidden_size=<hidden_size>, hidden size for the recurrent layer of any model")
     print("--dev to train on 0.75% on data and check against dev set (0.15% of data) at every epoch")
     print("--save=<path> to save the trained model to the specified position")
-    print("--write=<path> to save the prediction on test data to the specified position, in 1 word per line format, needs to be in test mode")
+    print(
+        "--write=<path> to save the prediction on test data to the specified position, in 1 word per line format, needs to be in test mode")
     print("--bidirectional to make it so that recurrent layers will be bidirectional, default is false")
     print("--unfreeze to make it so that embedding are trained during training, even if import from pre-trained "
           "embeddings, default is false")
-    print("--char_embedding=<path_to_char_embedding By using the recurrent model and providing this the recurrent model will "
-          "use char level embeddings in conjunction with the word embeddings, if the model 'reccurent' is not in use this will be "
-          "ignored")
+    print(
+        "--char_embedding=<path_to_char_embedding By using the recurrent model and providing this the recurrent model will "
+        "use char level embeddings in conjunction with the word embeddings, if the model 'reccurent' is not in use this will be "
+        "ignored")
 
 
 def parse_args(args):
@@ -260,7 +264,7 @@ def parse_args(args):
         opts, args = getopt.getopt(args, "",
                                    ["model=", "batch=", "epochs=", "lr=", "dev", "save=", "class=", "help", "sequence=",
                                     "vector", "write=", "embedding=", "bidirectional", "hidden_size=", "unfreeze",
-                                    "drop=", "decay=", "embedding_norm=", "char_embedding="])
+                                    "drop=", "decay=", "embedding_norm=", "char_embedding=", "dataset="])
     except getopt.GetoptError as err:
         # print help information and exit:
         print(err)
@@ -268,7 +272,8 @@ def parse_args(args):
 
     # possible values for target classes, possible values for models to use, possible modes
     possible_models = ["recurrent", "rnn", "gru", "lstm2ch", "encoder", "attention", "conv", "init_hidden", "lstmcrf"]
-    possible_sequences = ["tokens", "lemmas", "pos"]
+    possible_sequences = ["tokens"]  # , "lemmas", "pos"]
+    possible_datasets = ["movies", "atis", "vui"]
 
     opts = dict(opts)
     if "--help" in opts:
@@ -302,6 +307,9 @@ def parse_args(args):
     model = opts.get("--model", "")
     assert model in possible_models, "use a model from the possible models:\n %s" % possible_models
 
+    dataset = opts.get("--dataset", "")
+    assert dataset in possible_datasets, "use a dataset from the possible datasets:\n %s" % possible_datasets
+
     res = dict()
     res["lr"] = lr
     res["drop"] = drop
@@ -311,6 +319,7 @@ def parse_args(args):
     res["epochs"] = epochs
     res["hidden_size"] = hidden_size
     res["model"] = model
+    res["dataset"] = dataset
     res["sequence"] = sequence
     res["save"] = opts.get("--save", None)
     res["write"] = opts.get("--write", None)
@@ -336,45 +345,49 @@ def pick_model_transform(params):
     w2v_vocab, w2v_weights = w2v_matrix_vocab_generator(params["embedding"])
     c2v_vocab = None
     c2v_weights = None
+    if params["dataset"] == "movies":
+        class_vocab = data_manager.class_vocab_movies
     if params["char_embedding"] is not None:
         c2v_vocab, c2v_weights = w2v_matrix_vocab_generator(params["char_embedding"])
 
-    init_data_transform = data_manager.InitTransform(params["sequence"], w2v_vocab, data_manager.class_vocab, c2v_vocab)
+    init_data_transform = data_manager.InitTransform(params["sequence"], w2v_vocab, class_vocab, c2v_vocab)
     drop_data_transform = data_manager.DropTransform(0.001, w2v_vocab["<unk>"], w2v_vocab["<padding>"])
 
     if params["model"] == "recurrent" or params["model"] == "gru" or params["model"] == "rnn":
-        model = recurrent.Recurrent(w2v_weights, params["model"], params["hidden_size"], len(data_manager.class_vocab), params["drop"],
-                                    params["bidirectional"], not params["unfreeze"], params["embedding_norm"], c2v_weights)
+        model = recurrent.Recurrent(w2v_weights, params["model"], params["hidden_size"], len(class_vocab),
+                                    params["drop"],
+                                    params["bidirectional"], not params["unfreeze"], params["embedding_norm"],
+                                    c2v_weights)
     elif params["model"] == "lstm2ch":
-        model = lstm_2ch.LSTMN2CH(w2v_weights, params["hidden_size"], len(data_manager.class_vocab), params["drop"],
+        model = lstm_2ch.LSTMN2CH(w2v_weights, params["hidden_size"], len(class_vocab), params["drop"],
                                   params["bidirectional"], params["embedding_norm"])
     elif params["model"] == "encoder":
         tag_embedding_size = 20
         model = encoder.EncoderDecoderRNN(w2v_weights, tag_embedding_size, params["hidden_size"],
-                                          len(data_manager.class_vocab), params["drop"], params["bidirectional"],
+                                          len(class_vocab), params["drop"], params["bidirectional"],
                                           not params["unfreeze"], params["embedding_norm"],
                                           params["embedding_norm"])
     elif params["model"] == "attention":
         tag_embedding_size = 5
         padded_sentence_length = 25
         model = attention.Attention(w2v_weights, tag_embedding_size, params["hidden_size"],
-                                    len(data_manager.class_vocab),
+                                    len(class_vocab),
                                     params["drop"], params["bidirectional"], not params["unfreeze"],
                                     params["embedding_norm"], params["embedding_norm"],
                                     padded_sentence_length=padded_sentence_length)
     elif params["model"] == "conv":
         padded_sentence_length = 25
-        model = conv.CNN(w2v_weights, params["hidden_size"], len(data_manager.class_vocab), padded_sentence_length,
+        model = conv.CNN(w2v_weights, params["hidden_size"], len(class_vocab), padded_sentence_length,
                          params["drop"], params["bidirectional"], not params["unfreeze"],
                          params["embedding_norm"])
     elif params["model"] == "init_hidden":
         padded_sentence_length = 25
-        model = init_hidden.INIT(w2v_weights, params["hidden_size"], len(data_manager.class_vocab),
+        model = init_hidden.INIT(w2v_weights, params["hidden_size"], len(class_vocab),
                                  padded_sentence_length,
                                  params["drop"], params["bidirectional"], not params["unfreeze"],
                                  params["embedding_norm"])
     elif params["model"] == "lstmcrf":
-        model = lstmcrf.LstmCrf(w2v_weights, data_manager.class_vocab, params["hidden_size"], params["drop"],
+        model = lstmcrf.LstmCrf(w2v_weights, class_vocab, params["hidden_size"], params["drop"],
                                 params["bidirectional"], not params["unfreeze"], params["embedding_norm"])
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -421,8 +434,11 @@ if __name__ == "__main__":
         test_pickle = pd.read_pickle("../data/test.pickle")
         model.eval()
         predictions = predict(model, test_data)
+        if params["dataset"] == "movies":
+            class_vocab = data_manager.class_vocab_movies
         if params["write"] is not None:
-            write_predictions(test_pickle["tokens"].values, test_pickle["concepts"].values, predictions, params["write"],
-                              False)
+            write_predictions(test_pickle["tokens"].values, test_pickle["concepts"].values, predictions,
+                              params["write"],
+                              False, class_vocab)
         if params["save"] is not None:
             torch.save(model.state_dict(), params["save"])

@@ -87,6 +87,7 @@ class Data(object):
     - properties that allow you to get counter maps for words, lemmas, pos tags, concepts, and pairs
     - properties that allow you to get words, lemmas, pos tags, concepts lexicon
     - methods that allow you to get the counter for a specific word, lemma, pos tags, concept or pair
+    note: this class is something i copy pasted from an old project of mine, not really that useful in here
     """
 
     def __init__(self, file):
@@ -329,7 +330,7 @@ class DictWrapper(collections.Mapping):
         return iter(self._data)
 
 
-__class_vocab = {'I-movie.name': 2, 'I-character.name': 17, 'I-movie.location': 36, 'B-movie.location': 30,
+__class_vocab_movies = {'I-movie.name': 2, 'I-character.name': 17, 'I-movie.location': 36, 'B-movie.location': 30,
                  'B-movie.name': 1,
                  'B-director.name': 15, 'B-person.name': 6, 'I-actor.name': 20, 'B-movie.star_rating': 37,
                  'B-actor.name': 19,
@@ -344,7 +345,7 @@ __class_vocab = {'I-movie.name': 2, 'I-character.name': 17, 'I-movie.location': 
                  'I-actor.nationality': 40,
                  'I-movie.gross_revenue': 25, 'I-country.name': 22, 'B-person.nationality': 39, 'I-director.name': 16,
                  'I-award.category': 42, 'I-movie.subject': 5, 'B-movie.type': 41}
-class_vocab = DictWrapper(__class_vocab)
+class_vocab_movies = DictWrapper(__class_vocab_movies)
 
 
 def batch_sequence(batch):
