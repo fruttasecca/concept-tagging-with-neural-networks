@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import getopt
 import sys
+import os
 
 import pandas as pd
 import gensim
@@ -22,10 +23,6 @@ def trim_w2v(df, w2v):
     for index, data_point in df.iterrows():
         vocab |= set(data_point["tokens"])
         vocab |= set(" ".join(data_point["tokens"]).title().split(" "))
-        vocab |= set(data_point["lemmas"])
-        vocab |= set(" ".join(data_point["lemmas"]).title().split(" "))
-        vocab |= set(data_point["pos"])
-        vocab |= set(" ".join(data_point["pos"]).title().split(" "))
         vocab |= set(data_point["concepts"])
         vocab |= set(" ".join(data_point["concepts"]).title().split(" "))
 
@@ -56,18 +53,23 @@ def trim_w2v(df, w2v):
 
 
 if __name__ == "__main__":
-    opts, args = getopt.getopt(sys.argv[1:], "", ["bin=", "help"])
+    opts, args = getopt.getopt(sys.argv[1:], "", ["bin=", "help", "dataset="])
     opts = dict(opts)
+    dataset = opts.get("--dataset", "")
     if "--help" in opts:
-        print("./trim_w2v.py bin=<google w2v bin>.")
+        print("./trim_w2v.py --bin=<google w2v bin> --dataset=dataset")
         exit()
     if "--bin" not in opts:
         print("Please provide the google embeddings bin file.")
         exit()
 
-    train_data = Data("../data/train.data").to_dataframe()
-    test_data = Data("../data/test.data").to_dataframe()
-    total_data = pd.concat([train_data, test_data])
+    train_data = Data("../data/%s/train.data" % dataset).to_dataframe()
+    test_data = Data("../data/%s/test.data" % dataset).to_dataframe()
+    if os.path.exists("../data/%s/dev.data" % dataset):
+        dev_data = Data("../data/%s/dev.data" % dataset).to_dataframe()
+        total_data = pd.concat([train_data, dev_data, test_data])
+    else:
+        total_data = pd.concat([train_data, test_data])
 
     print("loading w2v w2v_weights")
     path = opts.get("--bin", "")
@@ -77,4 +79,4 @@ if __name__ == "__main__":
     w2v = trim_w2v(total_data, embedding_model)
 
     print("writing to disk")
-    w2v.to_pickle("../data/w2v_trimmed.pickle")
+    w2v.to_pickle("../data/%s/w2v_trimmed.pickle" % dataset)

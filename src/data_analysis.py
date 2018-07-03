@@ -210,7 +210,6 @@ def embeddings_oov(df_data, path, dataset):
     :param path: Where to save results.
     """
     w2v_vocab, _ = w2v_matrix_vocab_generator("../data/%s/w2v_trimmed.pickle" % dataset)
-    c2v_vocab, _ = w2v_matrix_vocab_generator("../data/%s/c2v_300.pickle" % dataset)
     missing_tokens = dict()
     for _, row in df_data.iterrows():
         for token in row["tokens"]:
