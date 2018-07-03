@@ -12,7 +12,7 @@ class pytorch_dataset(Dataset):
 
     def __init__(self, pickle, init_transform, getitem_transform=None):
         """
-        :param pickle Path to a pickle or a list of paths to pickles containing a dataframe with tokens and
+        :param pickle Path to a pickle or a list of paths to pickles containing a dataframe with tokens, lemmas, pos,
         concepts columns containing the data.
         :param init_transform: Transform function to be used on data points at import time.
         :param getitem_transform: Transform function to be used on data points when they are retrieved with __getitem__.
@@ -29,17 +29,21 @@ class pytorch_dataset(Dataset):
         self.init_transform = init_transform
         self.getitem_transform = getitem_transform
 
+        self.pos_vocab = dict()
         self.class_vocab = dict()
         for _, data_point in df.iterrows():
             for concept in data_point["concepts"]:
                 if concept not in self.class_vocab:
                     self.class_vocab[concept] = len(self.class_vocab)
+            for pos in data_point["pos"]:
+                if pos not in self.pos_vocab:
+                    self.pos_vocab[pos] = len(self.pos_vocab)
 
         # transform and save data
         self.data = dict()
         for i in range(len(df)):
             sample = df.iloc[i, :]
-            self.data[i] = self.init_transform(sample)
+            self.data[i] = self.init_transform(sample, self.pos_vocab)
 
         # empty dataframe
         df = df.iloc[0:0]
@@ -72,7 +76,7 @@ def w2v_matrix_vocab_generator(w2v_pickle):
         curr_index = len(w2v)
         w2v[data_point["token"]] = curr_index
         w2v_weights[curr_index, :] = np.array(data_point["vector"])
-    w2v["<UNK>"] = len(w2v_weights) - 2
+    w2v["<unk>"] = len(w2v_weights) - 2
     w2v["<padding>"] = len(w2v_weights) - 1
     return w2v, w2v_weights
 
@@ -112,22 +116,32 @@ class Data(object):
         """
         # singletons
         self.__words_counter = dict()
+        self.__lemmas_counter = dict()
+        self.__pos_counter = dict()
         self.__concepts_counter = dict()
         self.__concepts_clean_counter = dict()  # concepts without IOB notation
         # pairs of stuff
         self.__word_concept_counter = dict()
+        self.__lemma_concept_counter = dict()
+        self.__pos_concept_counter = dict()
 
         for phrase in self._data:
             for data_point in phrase:
-                word, concept = data_point
+                word, lemma, pos, concept = data_point
                 # singletons
                 self.__words_counter[word] = 1 + self.__words_counter.get(word, 0)
+                self.__lemmas_counter[lemma] = 1 + self.__lemmas_counter.get(lemma, 0)
+                self.__pos_counter[pos] = 1 + self.__pos_counter.get(pos, 0)
                 self.__concepts_counter[concept] = 1 + self.__concepts_counter.get(concept, 0)
                 clean_c = concept if concept == "O" else concept[2:]
                 self.__concepts_clean_counter[clean_c] = 1 + self.__concepts_clean_counter.get(clean_c, 0)
                 # pairs of stuff
                 self.__word_concept_counter[word + " " + concept] = 1 + self.__word_concept_counter.get(
                     word + " " + concept, 0)
+                self.__lemma_concept_counter[lemma + " " + concept] = 1 + self.__lemma_concept_counter.get(
+                    lemma + " " + concept, 0)
+                self.__pos_concept_counter[pos + " " + concept] = 1 + self.__pos_concept_counter.get(
+                    pos + " " + concept, 0)
 
     @property
     def size(self):
@@ -142,6 +156,20 @@ class Data(object):
         :return: Dictionary that maps a word to its counter.
         """
         return self.__words_counter
+
+    @property
+    def counter_lemmas(self):
+        """
+        :return: Dictionary that maps a lemma to its counter.
+        """
+        return self.__lemmas_counter
+
+    @property
+    def counter_pos(self):
+        """
+        :return: Dictionary that maps a pos tag to its counter.
+        """
+        return self.__pos_counter
 
     @property
     def counter_concepts(self):
@@ -165,11 +193,39 @@ class Data(object):
         return self.__word_concept_counter
 
     @property
+    def counter_lemma_concept(self):
+        """
+        :return: Dictionary that maps a lemma + concept pair to its counter, separated by space.
+        """
+        return self.__lemma_concept_counter
+
+    @property
+    def counter_pos_concept(self):
+        """
+        :return: Dictionary that maps a pos tag + concept pair to its counter, separated by space.
+        """
+        return self.__pos_concept_counter
+
+    @property
     def lexicon_words(self):
         """
         :return: List of words in the corpus.<epsilon> and <unk> not included.
         """
         return list(self.counter_words.keys())
+
+    @property
+    def lexicon_lemmas(self):
+        """
+        :return: List of lemmas in the corpus.<epsilon> and <unk> not included.
+        """
+        return list(self.counter_lemmas.keys())
+
+    @property
+    def lexicon_pos(self):
+        """
+        :return: List of pos tags in the corpus.<epsilon> and <unk> not included.
+        """
+        return list(self.counter_pos.keys())
 
     @property
     def lexicon_concepts(self):
@@ -192,6 +248,20 @@ class Data(object):
         """
         return self.__words_counter.get(word, 0)
 
+    def lemma(self, lemma):
+        """
+        :param lemma: Lemma for which to return the count for.
+        :return: Count of the lemma, >= 0.
+        """
+        return self.__lemmas_counter.get(lemma, 0)
+
+    def pos(self, pos):
+        """
+        :param pos: Pos tag for which to return the count for.
+        :return: Count of the pos tag, >= 0.
+        """
+        return self.__pos_counter.get(pos, 0)
+
     def concept(self, concept):
         """
         :param concept: Concept for which to return the count for.
@@ -207,21 +277,41 @@ class Data(object):
         """
         return self.__word_concept_counter.get(word + " " + concept, 0)
 
+    def lemma_concept(self, lemma, concept):
+        """
+        :param lemma: Lemma of the lemma - concept pair.
+        :param concept: Concept of the lemma - concept pair.
+        :return: Count of the lemma - concept pair >= 0.
+        """
+        return self.__lemma_concept_counter.get(lemma + " " + concept, 0)
+
+    def pos_concept(self, pos, concept):
+        """
+        :param pos: Pos tag of the pos - concept pair.
+        :param concept: Concept of the pos - concept pair.
+        :return: Count of the pos - concept pair >= 0.
+        """
+        return self.__pos_concept_counter.get(pos + " " + concept, 0)
+
     def to_dataframe(self):
         """
         Transform the data to a df containing the tokens, lemmas, pos and concepts columns.
         Each sentence will correspond to a row, each column (for each row) contains a list of strings.
         :return: Dataframe transposition of this data object.
         """
-        df = pd.DataFrame(columns=["tokens", "concepts"])
+        df = pd.DataFrame(columns=["tokens", "lemmas", "pos", "concepts"])
         for i, phrase in enumerate(self._data):
             words = []
+            lemmas = []
+            pos_tags = []
             concepts = []
             for data_point in phrase:
-                word, concept = data_point
+                word, lemma, pos, concept = data_point
                 words.append(word)
+                lemmas.append(lemma)
+                pos_tags.append(pos)
                 concepts.append(concept)
-            df.loc[i] = [words, concepts]
+            df.loc[i] = [words, lemmas, pos_tags, concepts]
         return df
 
 
@@ -241,21 +331,20 @@ class DictWrapper(collections.Mapping):
 
 
 __class_vocab_movies = {'I-movie.name': 2, 'I-character.name': 17, 'I-movie.location': 36, 'B-movie.location': 30,
-                        'B-movie.name': 1,
-                        'B-director.name': 15, 'B-person.name': 6, 'I-actor.name': 20, 'B-movie.star_rating': 37,
-                        'B-actor.name': 19,
-                        'B-award.ceremony': 27, 'I-rating.name': 28, 'B-director.nationality': 31,
-                        'B-movie.release_region': 35,
-                        'B-actor.nationality': 29, 'I-producer.name': 23, 'B-character.name': 9, 'B-producer.name': 11,
-                        'B-movie.genre': 14, 'I-movie.release_date': 13, 'I-movie.language': 21, 'B-actor.type': 18,
-                        'B-movie.description': 26, 'I-person.name': 7, 'I-movie.genre': 34, 'B-award.category': 33,
-                        'B-movie.language': 10,
-                        'O': 0, 'B-country.name': 3, 'B-rating.name': 8, 'I-award.ceremony': 32, 'B-movie.subject': 4,
-                        'B-movie.release_date': 12, 'B-movie.gross_revenue': 24, 'I-movie.release_region': 38,
-                        'I-actor.nationality': 40,
-                        'I-movie.gross_revenue': 25, 'I-country.name': 22, 'B-person.nationality': 39,
-                        'I-director.name': 16,
-                        'I-award.category': 42, 'I-movie.subject': 5, 'B-movie.type': 41}
+                 'B-movie.name': 1,
+                 'B-director.name': 15, 'B-person.name': 6, 'I-actor.name': 20, 'B-movie.star_rating': 37,
+                 'B-actor.name': 19,
+                 'B-award.ceremony': 27, 'I-rating.name': 28, 'B-director.nationality': 31,
+                 'B-movie.release_region': 35,
+                 'B-actor.nationality': 29, 'I-producer.name': 23, 'B-character.name': 9, 'B-producer.name': 11,
+                 'B-movie.genre': 14, 'I-movie.release_date': 13, 'I-movie.language': 21, 'B-actor.type': 18,
+                 'B-movie.description': 26, 'I-person.name': 7, 'I-movie.genre': 34, 'B-award.category': 33,
+                 'B-movie.language': 10,
+                 'O': 0, 'B-country.name': 3, 'B-rating.name': 8, 'I-award.ceremony': 32, 'B-movie.subject': 4,
+                 'B-movie.release_date': 12, 'B-movie.gross_revenue': 24, 'I-movie.release_region': 38,
+                 'I-actor.nationality': 40,
+                 'I-movie.gross_revenue': 25, 'I-country.name': 22, 'B-person.nationality': 39, 'I-director.name': 16,
+                 'I-award.category': 42, 'I-movie.subject': 5, 'B-movie.type': 41}
 class_vocab_movies = DictWrapper(__class_vocab_movies)
 
 
@@ -300,6 +389,7 @@ class DropTransform(object):
         for i in range(len(seq)):
             seq[i] = self.might_drop(seq[i].item())
         tsample["sequence"] = seq
+        tsample["pos"] = sample["pos"]
         tsample["concepts"] = sample["concepts"]
         tsample["sequence_extra"] = sample["sequence_extra"]
         if "chars" in sample:
@@ -383,7 +473,7 @@ class InitTransform(object):
             elif word == "@card@":
                 vectors.append(self.w2v_vocab["number"])
             else:
-                vectors.append(self.w2v_vocab["<UNK>"])
+                vectors.append(self.w2v_vocab["<unk>"])
 
         if len(vectors) > self.pad_sentence_length:
             vectors = vectors[:self.pad_sentence_length]
@@ -433,7 +523,7 @@ class InitTransform(object):
             elif word == "@card@":
                 vectors.append(self.w2v_vocab["number"])
             else:
-                vectors.append(vocab["<UNK>"])
+                vectors.append(vocab["<unk>"])
         if len(vectors) > pad_length:
             vectors = vectors[:pad_length]
         elif len(vectors) < pad_length:
@@ -459,9 +549,10 @@ class InitTransform(object):
 
         return res
 
-    def __call__(self, sample):
+    def __call__(self, sample, pos_vocab):
         tsample = dict()
         tsample["sequence"] = self.to_w2v_indexes(sample[self.sequence])
+        tsample["pos"] = self.to_vocab_indexes(pos_vocab, sample["pos"])
         tsample["concepts"] = self.to_vocab_indexes(self.class_vocab, sample["concepts"])
         tsample["sequence_extra"] = self.to_matrix(sample[self.sequence], self.w2v_vocab, self.pad_sentence_length)
         if self.c2v_vocab is not None:

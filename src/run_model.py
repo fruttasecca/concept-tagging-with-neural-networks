@@ -120,8 +120,9 @@ def evaluate_model(dev_data, model, batch_size):
     # evaluate by calling the evaluation script then clean up
     if params["dataset"] == "movies":
         class_vocab = data_manager.class_vocab_movies
+
     write_predictions(y_true, y_true, y_predicted, "../output/dev_pred.txt", True, class_vocab)
-    os.system("../output/conlleval.pl < ../output/dev_pred.txt | head -n2")
+    os.system("../output/%s/conlleval.pl < ../output/dev_pred.txt | head -n2" % params["dataset"])
     os.system("rm ../output/dev_pred.txt")
 
 
@@ -198,7 +199,7 @@ def train_model(train_data, model, dev_data=None, batch_size=80, lr=0.0001, epoc
             print("Train stats:")
             # evaluate by calling the evaluation script then clean up
             write_predictions(y_true, y_true, y_predicted, "../output/train_pred.txt")
-            os.system("../output/conlleval.pl < ../output/train_pred.txt | head -n2")
+            os.system("../output/conlleval.pl < ../output/train_pred.txt | head -n2" % params["dataset"])
             os.system("rm ../output/train_pred.txt")
 
         # if we passed dev train_data to it evaluate on it and report, else keep training
@@ -326,7 +327,8 @@ def parse_args(args):
     res["dev"] = "--dev" in opts
     res["bidirectional"] = "--bidirectional" in opts
     res["unfreeze"] = "--unfreeze" in opts
-    res["embedding"] = opts.get("--embedding", "../data/w2v_trimmed.pickle")
+    if dataset == "movies":
+        res["embedding"] = opts.get("--embedding", "../data/movies/w2v_trimmed.pickle")
     res["char_embedding"] = opts.get("--char_embedding", None)
 
     print("-------------")
@@ -351,7 +353,7 @@ def pick_model_transform(params):
         c2v_vocab, c2v_weights = w2v_matrix_vocab_generator(params["char_embedding"])
 
     init_data_transform = data_manager.InitTransform(params["sequence"], w2v_vocab, class_vocab, c2v_vocab)
-    drop_data_transform = data_manager.DropTransform(0.001, w2v_vocab["<unk>"], w2v_vocab["<padding>"])
+    drop_data_transform = data_manager.DropTransform(0.001, w2v_vocab["<UNK>"], w2v_vocab["<padding>"])
 
     if params["model"] == "recurrent" or params["model"] == "gru" or params["model"] == "rnn":
         model = recurrent.Recurrent(w2v_weights, params["model"], params["hidden_size"], len(class_vocab),
@@ -414,28 +416,34 @@ if __name__ == "__main__":
 
     # run in dev mode
     if params["dev"]:
-        pickles = ["../data/train_split.pickle"]
-        train_data = pytorch_dataset(pickles, init_data_transform, run_data_transform)
-        dev_data = pytorch_dataset("../data/dev.pickle", init_data_transform)
+        if params["dataset"] == "movies":
+            class_vocab = data_manager.class_vocab_movies
+            train_pickle = ["../data/movies/train_split.pickle"]
+            dev_pickle = ["../data/movies/dev.pickle"]
+
+        train_data = pytorch_dataset(train_pickle, init_data_transform, run_data_transform)
+        dev_data = pytorch_dataset(dev_pickle, init_data_transform)
 
         print("training")
         train_model(train_data, model, dev_data, params["batch"], params["lr"], params["epochs"], params["decay"])
 
     # run in test mode
     else:
-        pickles = ["../data/train.pickle", "../data/dev.pickle"]
-        train_data = pytorch_dataset(pickles, init_data_transform, run_data_transform)
+        if params["dataset"] == "movies":
+            class_vocab = data_manager.class_vocab_movies
+            train_pickles = ["../data/movies/train.pickle", "../data/dev.pickle"]
+            test_pickle = ["../data/movies/test.pickle"]
+
+        train_data = pytorch_dataset(train_pickles, init_data_transform, run_data_transform)
         print("training")
         train_model(train_data, model, None, params["batch"], params["lr"], params["epochs"], params["decay"])
         del train_data
 
         print("testing")
-        test_data = pytorch_dataset("../data/test.pickle", init_data_transform)
+        test_data = pytorch_dataset(test_pickle, init_data_transform)
         test_pickle = pd.read_pickle("../data/test.pickle")
         model.eval()
         predictions = predict(model, test_data)
-        if params["dataset"] == "movies":
-            class_vocab = data_manager.class_vocab_movies
         if params["write"] is not None:
             write_predictions(test_pickle["tokens"].values, test_pickle["concepts"].values, predictions,
                               params["write"],

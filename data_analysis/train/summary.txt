@@ -1,7 +1,0 @@
-total phrases: 3338
-average length of phrases: 6.42690233672858
-word lexicon size: 1728
-lemma lexicon size: 1582
-pos lexicon size: 49
-concept lexicon size (with IOB): 41
-concept lexicon size (without IOB): 24
