@@ -5,17 +5,17 @@ import torch.nn.functional as F
 import data_manager
 
 
-class LSTMN(nn.Module):
-    def __init__(self, w2v_weights, lstm_layers, hidden_dim, tagset_size, drop_rate, bidirectional=False,
+class Recurrent(nn.Module):
+    def __init__(self, w2v_weights, recurrent_mode, hidden_dim, tagset_size, drop_rate, bidirectional=False,
                  freeze=True, embedding_norm=10., c2v_weights=None, pad_word_length=16):
         """
         :param w2v_weights: Matrix of w2v w2v_weights, ith row contains the embedding for the word mapped to the ith index, the
         last row should correspond to the padding token, <padding>.
-        :param lstm_layers: Number of lstm layers.
-        :param hidden_dim Size of the hidden dimension of the lstm layer.
+        :param recurrent_mode: Which kind of recurrent layers to use, 'recurrent', 'gru', or 'rnn'.
+        :param hidden_dim Size of the hidden dimension of the recurrent layer.
         :param tagset_size: Number of possible classes, this will be the dimension of the output vector.
         :param drop_rate: Drop rate for regularization.
-        :param bidirectional: If the lstm should be bidirectional.
+        :param bidirectional: If the recurrent should be bidirectional.
         :param freeze: If the embedding parameters should be frozen or trained during training.
         :param embedding_norm: Max norm of the embeddings.
         :param c2v_weights: Matrix of w2v c2v_weights, ith row contains the embedding for the char mapped to the ith index, the
@@ -24,30 +24,37 @@ class LSTMN(nn.Module):
         :param pad_word_length: Length to which each word is padded to, only used if c2v_weights has been passed and
         the network is going to use char representations, it is needed for the size of the maxpooling window.
         """
-        super(LSTMN, self).__init__()
+        super(Recurrent, self).__init__()
 
-        self.w2v_weights = w2v_weights
-        self.embedding_dim = w2v_weights.shape[1]
-        self.lstm_layers = lstm_layers
         self.hidden_dim = hidden_dim
         self.tagset_size = tagset_size
+        self.embedding_dim = w2v_weights.shape[1]
+        self.w2v_weights = w2v_weights
+        self.c2v_weights = c2v_weights
+        self.bidirectional = bidirectional
         self.pad_word_length = pad_word_length
+        self.bidirectional = bidirectional
 
-        self.drop_rate = drop_rate
-
-        self.embedding = nn.Embedding.from_pretrained(torch.FloatTensor(w2v_weights).cuda(), freeze=freeze)
+        self.embedding = nn.Embedding.from_pretrained(torch.FloatTensor(w2v_weights), freeze=freeze)
         self.embedding.max_norm = embedding_norm
 
+        self.drop_rate = drop_rate
         self.drop = nn.Dropout(self.drop_rate)
-        self.bnorm = nn.BatchNorm2d(1)
 
-        # The LSTM takes word embeddings as inputs, and outputs hidden states
+        # The recurrent layer takes word embeddings as inputs, and outputs hidden states
         # with dimensionality hidden_dim.
-        self.lstm = nn.LSTM(self.embedding_dim, self.hidden_dim // (1 if not bidirectional else 2),
-                            dropout=self.drop_rate, batch_first=True, num_layers=self.lstm_layers,
-                            bidirectional=bidirectional)
-        if bidirectional:
-            self.init_hidden = self.__init_hidden_bidirectional
+        if recurrent_mode == "recurrent":
+            self.recurrent = nn.LSTM(self.embedding_dim, self.hidden_dim // (1 if not self.bidirectional else 2),
+                                     batch_first=True, bidirectional=self.bidirectional)
+        elif recurrent_mode == "gru":
+            self.recurrent = nn.GRU(self.embedding_dim, self.hidden_dim // (1 if not self.bidirectional else 2),
+                                    batch_first=True, bidirectional=self.bidirectional)
+        elif recurrent_mode == "rnn":
+            self.recurrent = nn.RNN(self.embedding_dim, self.hidden_dim // (1 if not self.bidirectional else 2),
+                                    batch_first=True, bidirectional=self.bidirectional)
+        else:
+            print("Recurrent mode should be either: 'recurrent', 'gru', 'rnn'.")
+            exit()
 
         self.hidden2tag = nn.Sequential(
             nn.BatchNorm2d(1),
@@ -57,18 +64,29 @@ class LSTMN(nn.Module):
         )
 
         # setup convolution on characters if c2v_weights are passed
-        if c2v_weights is not None:
-            self.c2v_weights = c2v_weights
+        if self.c2v_weights is not None:
             self.char_embedding_dim = c2v_weights.shape[1]
-            self.char_embedding = nn.Embedding.from_pretrained(torch.FloatTensor(c2v_weights).cuda(), freeze=freeze)
+            self.char_embedding = nn.Embedding.from_pretrained(torch.FloatTensor(c2v_weights), freeze=freeze)
             self.char_embedding.max_norm = embedding_norm
             self.feats = 20  # for the output channels of the conv layers
 
-            self.lstm = nn.LSTM(self.embedding_dim + 50,
-                                self.hidden_dim // (1 if not bidirectional else 2),
-                                dropout=self.drop_rate, batch_first=True, num_layers=self.lstm_layers,
-                                bidirectional=bidirectional)
+            if recurrent_mode == "recurrent":
+                self.recurrent = nn.LSTM(self.embedding_dim + 50,
+                                         self.hidden_dim // (1 if not self.bidirectional else 2),
+                                         batch_first=True, bidirectional=self.bidirectional)
+            elif recurrent_mode == "gru":
+                self.recurrent = nn.GRU(self.embedding_dim + 50,
+                                        self.hidden_dim // (1 if not self.bidirectional else 2),
+                                        batch_first=True, bidirectional=self.bidirectional)
+            elif recurrent_mode == "rnn":
+                self.recurrent = nn.RNN(self.embedding_dim + 50,
+                                        self.hidden_dim // (1 if not self.bidirectional else 2),
+                                        batch_first=True, bidirectional=self.bidirectional)
+            else:
+                print("Recurrent mode should be either: 'recurrent', 'gru', 'rnn'.")
+                exit()
 
+            # conv layers for single character, pairs of characters, 3x characters
             self.ngram1 = nn.Sequential(
                 nn.Conv2d(1, self.feats * 1, kernel_size=(1, self.char_embedding_dim),
                           stride=(1, self.char_embedding_dim),
@@ -96,6 +114,7 @@ class LSTMN(nn.Module):
                 nn.Tanh(),
             )
 
+            # seq layers to elaborate on the output of conv layers
             self.fc1 = nn.Sequential(
                 nn.Linear(self.feats, 10),
             )
@@ -106,27 +125,30 @@ class LSTMN(nn.Module):
                 nn.Linear(self.feats * 3, 20),
             )
 
-            self.forward = self._forward_with_conv
-
     def init_hidden(self, batch_size):
         """
-        Inits the hidden state of the lstm layer.
+        Inits the hidden state of the recurrent layer.
         :param batch_size
-        :return: Initialized hidden state of the lstm.
+        :return: Initialized hidden state of the recurrent encoder.
         """
-        # The axes semantics are (num_layers, minibatch_size, hidden_dim)
-        return (torch.zeros(self.lstm.num_layers, batch_size, self.hidden_dim).cuda(),
-                torch.zeros(self.lstm.num_layers, batch_size, self.hidden_dim).cuda())
-
-    def __init_hidden_bidirectional(self, batch_size):
-        """
-        Inits the hidden state of the lstm layer.
-        :param batch_size
-        :return: Initialized hidden state of the lstm.
-        """
-        # The axes semantics are (num_layers, minibatch_size, hidden_dim)
-        return (torch.zeros(self.lstm.num_layers * 2, batch_size, self.hidden_dim // 2).cuda(),
-                torch.zeros(self.lstm.num_layers * 2, batch_size, self.hidden_dim // 2).cuda())
+        if isinstance(self.recurrent, nn.LSTM):
+            if self.bidirectional:
+                state = [torch.zeros(self.recurrent.num_layers * 2, batch_size, self.hidden_dim // 2),
+                         torch.zeros(self.recurrent.num_layers * 2, batch_size, self.hidden_dim // 2)]
+            else:
+                state = [torch.zeros(self.recurrent.num_layers, batch_size, self.hidden_dim),
+                         torch.zeros(self.recurrent.num_layers, batch_size, self.hidden_dim)]
+            if next(self.parameters()).is_cuda:
+                state[0] = state[0].cuda()
+                state[1] = state[1].cuda()
+        else:
+            if self.bidirectional:
+                state = torch.zeros(self.recurrent.num_layers * 2, batch_size, self.hidden_dim // 2)
+            else:
+                state = torch.zeros(self.recurrent.num_layers, batch_size, self.hidden_dim)
+            if next(self.parameters()).is_cuda:
+                state = state.cuda()
+        return state
 
     def forward(self, batch):
         """
@@ -136,21 +158,6 @@ class LSTMN(nn.Module):
         for all sentences; a tensor containing the true label for each word and a tensor containing the lengths
         of the sequences in descending order.
         """
-        hidden = self.init_hidden(len(batch))
-
-        # pack sentences and pass through rnn
-        data, labels, char_data = data_manager.batch_sequence(batch)
-        data = self.embedding(data)
-        data = self.drop(data)
-
-        lstm_out, hidden = self.lstm(data, hidden)
-        # send output to fc layer(s)
-        tag_space = self.hidden2tag(lstm_out.unsqueeze(1).contiguous())
-        tag_scores = F.log_softmax(tag_space, dim=3)
-
-        return tag_scores.view(-1, self.tagset_size), labels.view(-1)
-
-    def _forward_with_conv(self, batch):
         hidden = self.init_hidden(len(batch))
 
         # pack sentences and pass through rnn
@@ -176,9 +183,9 @@ class LSTMN(nn.Module):
             batched_conv = torch.cat(batched_conv, dim=1).squeeze(2)
             data = torch.cat([data, batched_conv], dim=2)
 
-        lstm_out, hidden = self.lstm(data, hidden)
+        rec_out, hidden = self.recurrent(data, hidden)
         # send output to fc layer(s)
-        tag_space = self.hidden2tag(lstm_out.unsqueeze(1).contiguous())
+        tag_space = self.hidden2tag(rec_out.unsqueeze(1).contiguous())
         tag_scores = F.log_softmax(tag_space, dim=3)
 
         return tag_scores.view(-1, self.tagset_size), labels.view(-1)

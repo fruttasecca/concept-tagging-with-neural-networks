@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+# quick and dirty script to rewrite data for CRF++
 def expand(file):
     with open(file, "r") as input:
         with open("exp." + file, "w") as output:

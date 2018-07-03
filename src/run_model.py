@@ -8,13 +8,12 @@ import time
 import getopt
 import sys
 import torch
-import torchvision
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader
 
 import data_manager
 from data_manager import pytorch_dataset, w2v_matrix_vocab_generator
-from models import lstm, rnn, gru, lstm_2ch, encoder, attention, conv, init_hidden, lstmcrf
+from models import recurrent,lstm_2ch, encoder, attention, conv, init_hidden, lstmcrf
 
 
 def worker_init(*args):
@@ -231,8 +230,8 @@ def explain_usage(models, sequences):
     print("--bidirectional to make it so that recurrent layers will be bidirectional, default is false")
     print("--unfreeze to make it so that embedding are trained during training, even if import from pre-trained "
           "embeddings, default is false")
-    print("--char_embedding=<path_to_char_embedding By using the lstm model and providing this the lstm model will "
-          "use char level embeddings in conjunction with the word embeddings, if the lstm is not in use this will be "
+    print("--char_embedding=<path_to_char_embedding By using the recurrent model and providing this the recurrent model will "
+          "use char level embeddings in conjunction with the word embeddings, if the model 'reccurent' is not in use this will be "
           "ignored")
 
 
@@ -255,7 +254,7 @@ def parse_args(args):
     bidirectional = if the recurrent model should be bidirectional
     unfreeze = if embedding should be unfrozen and trained
     embedding = which embeddings to use
-    char_embedding = which char embeddings to use (providing this will make it so that the lstm model will use char embeddings)
+    char_embedding = which char embeddings to use (providing this will make it so that the recurrent model will use char embeddings)
     """
     try:
         opts, args = getopt.getopt(args, "",
@@ -268,7 +267,7 @@ def parse_args(args):
         sys.exit(2)
 
     # possible values for target classes, possible values for models to use, possible modes
-    possible_models = ["lstm", "rnn", "gru", "lstm2ch", "encoder", "attention", "conv", "init_hidden", "lstmcrf"]
+    possible_models = ["recurrent", "rnn", "gru", "lstm2ch", "encoder", "attention", "conv", "init_hidden", "lstmcrf"]
     possible_sequences = ["tokens", "lemmas", "pos"]
 
     opts = dict(opts)
@@ -343,17 +342,11 @@ def pick_model_transform(params):
     init_data_transform = data_manager.InitTransform(params["sequence"], w2v_vocab, data_manager.class_vocab, c2v_vocab)
     drop_data_transform = data_manager.DropTransform(0.001, w2v_vocab["<unk>"], w2v_vocab["<padding>"])
 
-    if params["model"] == "lstm":
-        model = lstm.LSTMN(w2v_weights, 1, params["hidden_size"], len(data_manager.class_vocab), params["drop"],
-                           params["bidirectional"], not params["unfreeze"], params["embedding_norm"], c2v_weights)
-    elif params["model"] == "rnn":
-        model = rnn.RNN(w2v_weights, 1, params["hidden_size"], len(data_manager.class_vocab), params["drop"],
-                        params["bidirectional"], not params["unfreeze"], params["embedding_norm"])
-    elif params["model"] == "gru":
-        model = gru.GRU(w2v_weights, 1, params["hidden_size"], len(data_manager.class_vocab), params["drop"],
-                        params["bidirectional"], not params["unfreeze"], params["embedding_norm"])
+    if params["model"] == "recurrent" or params["model"] == "gru" or params["model"] == "rnn":
+        model = recurrent.Recurrent(w2v_weights, params["model"], params["hidden_size"], len(data_manager.class_vocab), params["drop"],
+                                    params["bidirectional"], not params["unfreeze"], params["embedding_norm"], c2v_weights)
     elif params["model"] == "lstm2ch":
-        model = lstm_2ch.LSTMN2CH(w2v_weights, 1, params["hidden_size"], len(data_manager.class_vocab), params["drop"],
+        model = lstm_2ch.LSTMN2CH(w2v_weights, params["hidden_size"], len(data_manager.class_vocab), params["drop"],
                                   params["bidirectional"], params["embedding_norm"])
     elif params["model"] == "encoder":
         tag_embedding_size = 20
