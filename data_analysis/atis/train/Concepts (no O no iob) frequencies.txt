@@ -20,8 +20,8 @@ flight_stop 146 0.009031
 airline_code 117 0.007237
 toloc.airport_name 82 0.005072
 depart_date.today_relative 80 0.004948
-airport_name 72 0.004454
 flight_time 72 0.004454
+airport_name 72 0.004454
 flight_number 71 0.004392
 arrive_date.day_name 70 0.004330
 toloc.state_name 69 0.004268

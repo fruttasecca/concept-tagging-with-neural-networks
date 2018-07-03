@@ -11,8 +11,8 @@ B-depart_date.month_name 318 0.020387
 B-depart_time.time 283 0.018143
 B-round_trip 266 0.017053
 I-round_trip 259 0.016605
-B-flight_mod 251 0.016092
 B-cost_relative 251 0.016092
+B-flight_mod 251 0.016092
 B-depart_time.time_relative 244 0.015643
 I-depart_time.time 220 0.014104
 B-stoploc.city_name 189 0.012117
@@ -41,8 +41,8 @@ B-meal_description 48 0.003077
 I-toloc.airport_name 46 0.002949
 I-city_name 45 0.002885
 I-airport_name 43 0.002757
-B-arrive_date.day_number 42 0.002693
 B-arrive_date.month_name 42 0.002693
+B-arrive_date.day_number 42 0.002693
 I-cost_relative 40 0.002564
 B-depart_time.period_mod 39 0.002500
 B-transport_type 37 0.002372
