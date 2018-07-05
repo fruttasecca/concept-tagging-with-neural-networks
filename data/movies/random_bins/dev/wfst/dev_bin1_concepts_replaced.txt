@@ -1,0 +1,111 @@
+i would like to look for the director of B-movie.name I-movie.name 
+movies like B-movie.name I-movie.name I-movie.name 
+what was the release date for B-movie.name 
+show B-actor.name I-actor.name movies 
+i need a list of movies produced by B-producer.name I-producer.name 
+reviews for B-movie.name I-movie.name I-movie.name 
+search for the movie B-movie.name I-movie.name I-movie.name 
+what are the reviews for B-movie.name I-movie.name I-movie.name 
+what genre is B-movie.name I-movie.name 
+show me B-country.name movies 
+who directed B-movie.name 
+B-actor.name 's movies 
+show all B-rating.name movies for B-movie.release_date I-movie.release_date 
+what genre is B-movie.name 
+B-movie.genre B-rating.name I-rating.name movies 
+who acted in B-movie.name I-movie.name 
+list the budget for B-movie.name 
+who directed B-movie.name I-movie.name I-movie.name 
+show me information about movie 
+find movies produced by B-producer.name B-producer.name 
+can you find movies with B-director.name I-director.name 
+who directed B-movie.name I-movie.name 
+what movies have B-producer.name I-producer.name produced 
+movies about B-movie.subject 
+what movies has B-producer.name I-producer.name produced 
+did you enjoy voice acting for the movie B-movie.name I-movie.name I-movie.name 
+movies from B-country.name 
+what movies have come out of B-country.name 
+watch B-producer.name I-producer.name movies 
+show me the behind scenes look of how the movie was made 
+who starred in B-movie.name 
+browse B-producer.name information 
+show me the budget for B-movie.name I-movie.name 
+show all movies directed by B-director.name I-director.name 
+B-movie.name video 
+what movies are related to B-movie.name I-movie.name 
+who was the male star of B-movie.name 
+what movies has B-director.name I-director.name directed 
+what was the budget for B-movie.name I-movie.name I-movie.name 
+movies by B-director.name I-director.name 
+what age group is B-rating.name rated movies for 
+find the revenue for I-movie.name I-movie.name I-movie.name I-movie.name 
+show me a list of B-movie.genre 
+show me the revenue created by B-movie.name I-movie.name I-movie.name I-movie.name I-movie.name 
+B-movie.name I-movie.name I-movie.name I-movie.name I-movie.name I-movie.name I-movie.name movie info 
+can you tell me some famous movies by producer B-producer.name I-producer.name 
+can you tell me more about the producer B-person.name I-person.name 
+show all B-country.name movies made in B-movie.release_date I-movie.release_date 
+i want to see a movie which was directed by B-director.name 
+when was B-movie.name I-movie.name in the theatre 
+movie made by B-producer.name 
+show me movies that are in B-movie.language 
+is B-person.name I-person.name going to do another B-movie.name I-movie.name 
+find B-actor.name I-actor.name movies 
+search for the name of the director of B-movie.name 
+is B-movie.name I-movie.name B-rating.name I-rating.name 
+want to find the revenue of B-movie.name 
+i need names of some movies about B-movie.subject 
+what other videos does the country B-country.name have 
+current movies rated B-rating.name 
+i want to see a list of B-rating.name rated movies 
+a showing of movies that are in B-movie.language 
+find the director for B-movie.name I-movie.name I-movie.name 
+search for information about B-country.name movies 
+search for movies starring the B-actor.type B-actor.name 
+what movies did B-producer.name produce in B-movie.release_date 
+i want to know what the budget for B-movie.name was 
+B-movie.subject I-movie.subject 
+what is the ratings of B-movie.genre movies 
+will you show the cost to produce B-movie.name I-movie.name I-movie.name 
+how much money did B-movie.name I-movie.name earn at the box office 
+show me B-movie.genre 
+who directed the movie B-movie.name I-movie.name 
+please show B-movie.name I-movie.name in B-movie.language 
+is a B-movie.name I-movie.name I-movie.name I-movie.name a B-movie.genre 
+what language is spoken in B-movie.name 
+B-country.name life of a movie 
+B-movie.subject movies 
+what is the classification of movie 
+the movie B-movie.name director 
+can you find more information on B-person.name I-person.name 
+thirty dance 
+find the director of B-movie.name I-movie.name 
+show all movies by B-award.ceremony winning directors for the B-movie.release_date 
+in search of the map of B-country.name 
+who are all of the actors in B-movie.name 
+who was the producer for B-movie.name I-movie.name I-movie.name 
+find B-movie.name I-movie.name movies 
+search for B-person.name I-person.name 
+i can 't figure out the name of the lead guy in B-movie.name I-movie.name 
+what movies were filmed in B-country.name 
+what actors were in B-movie.name I-movie.name 
+find movies only B-rating.name 
+list all B-director.name I-director.name movies 
+what video clips have B-actor.name I-actor.name 
+what can an B-rating.name rated movie show 
+how much did B-movie.name gross 
+what movies are rated B-rating.name I-rating.name 
+show me information B-movie.name I-movie.name 
+find synopsis for B-movie.name I-movie.name I-movie.name 
+producer for B-movie.name I-movie.name 
+show me the directors of B-movie.name I-movie.name I-movie.name I-movie.name 
+find a B-rating.name rated movie 
+find me B-rating.name movies 
+tell me the budget for the movie B-movie.name 
+show all movies with america in title 
+i would like to see something produced by B-producer.name I-producer.name 
+what movie has B-actor.name I-actor.name done lately 
+did B-director.name I-director.name direct any movies 
+i would like to find movies produced by B-producer.name I-producer.name 
+B-movie.name I-movie.name facts 
