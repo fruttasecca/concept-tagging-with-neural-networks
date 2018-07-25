@@ -1,5 +1,0 @@
-OOV rate:  0.002785515320334262
-OOV WORDS:
-alaska 
-Concepts in order of oov times:
-B-airline_name 1
