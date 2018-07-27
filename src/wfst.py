@@ -6,6 +6,14 @@ import sys  # arguments
 from data_manager import Data
 from data_manager import class_vocab_movies, class_vocab_atis
 
+"""
+File to run wfsts on atis and movies;
+on atis it will result on an F1 of 93.08, on movies
+it will be 82.74, to get to 82.96 the data in 
+data/movies/wfst must be elaborated as in "elaboration3"
+of https://github.com/fruttasecca/concept-tagging-with-WFST
+"""
+
 
 def write_word_concept_transducer_same_prob(data):
     """
@@ -29,7 +37,7 @@ def write_word_concept_transducer_same_prob(data):
     wt_file.close()
 
 
-def run(train_data, concepts_phrases, test_data, gram, tech, dataset):
+def run(train_data, concepts_phrases, test_data, gram, tech, class_vocab):
     """
     Trains the model given gram length and smoothing, then runs it against the test data, an output file
     will be written in the output directory of this project, the file is going to be named as
@@ -42,9 +50,7 @@ def run(train_data, concepts_phrases, test_data, gram, tech, dataset):
     :param test_data: Test data in (word lemma pos IOB) format for each line, with phrases separated by a newline.
     :param gram: Length of the gram used, --order=gram is going to be used in ngramcount.
     :param tech: Smoothing technique, --method=tech is going to be used in ngrammake.
-    :param cut_off: Which kind of cut_off to use : empty string for no cut_off, thres for counting out words
-    under a certain thres, and distr for counting out words under a certain thres and distributing the probability
-    of mapping <unk> to a concept in a way proportional to how many word-concept pairs have been removed this way.
+    :param class_vocab: Dict containing all the concept types, contained in the data_manager module.
     """
     # get data
     data = Data(train_data)
@@ -64,7 +70,6 @@ def run(train_data, concepts_phrases, test_data, gram, tech, dataset):
         exit()
     os.chdir(dir_name)
 
-
     ############################
     ############################
     # create and train model
@@ -72,10 +77,7 @@ def run(train_data, concepts_phrases, test_data, gram, tech, dataset):
     write_word_concept_transducer_same_prob(data)
 
     # make opengrm lexicon
-    if dataset == "movies":
-        cmd = "ngramsymbols ../../data/%s/train.data > train.syms" % dataset
-    elif dataset == "atis":
-        cmd = "ngramsymbols ../../data/%s/random_bins/train_dev/wfst/train_dev_bin6.txt > train.syms" % dataset
+    cmd = "ngramsymbols ../%s > train.syms" % train_data
     os.system(cmd)
 
     # compile word to concept fst
@@ -133,11 +135,6 @@ def run(train_data, concepts_phrases, test_data, gram, tech, dataset):
                     predicted_labels.append(split[3])
             res.close()
 
-            if dataset == "movies":
-                class_vocab = class_vocab_movies
-            elif dataset == "atis":
-                class_vocab = class_vocab_atis
-
             # write line to file (word label predicted_label)
             for word, label, predicted in zip(phrase, labels, predicted_labels):
                 # these 2 checks are needed to clean out extra classes from data elaboration
@@ -164,14 +161,33 @@ if __name__ == "__main__":
     smoothing_tech = ["witten_bell", "absolute", "kneser_ney", "presmoothed", "unsmoothed", "katz"]
     # length of grams
     grams = ["1", "2", "3", "4", "5"]
+    # datasets
+    datasets = ["atis", "movies"]
 
-    if len(sys.argv) != 6 and len(sys.argv) != 7:
-        print("usage: ./train_and_test.py train_data concept_phrases test_data gram-length smoothing-method")
-    elif sys.argv[4] not in grams:
+    if len(sys.argv) != 4:
+        print("usage: ./wfst.py dataset gram smoothing")
+    elif sys.argv[1] not in datasets:
+        print("dataset should be among the following")
+        print(datasets)
+    elif sys.argv[2] not in grams:
         print("grams should be among the following:")
         print(grams)
-    elif sys.argv[5] not in smoothing_tech:
+    elif sys.argv[3] not in smoothing_tech:
         print("smoothing should be among the following:")
         print(smoothing_tech)
     else:
-        run(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
+        dataset = sys.argv[1]
+        gram = sys.argv[2]
+        tech = sys.argv[3]
+        if dataset == "movies":
+            train_data = "../data/movies/wfst/train.txt"
+            concept_sentences = "../data/movies/wfst/concept_sentences.txt"
+            test_data = "../data/movies/wfst/test.txt"
+            class_vocab = class_vocab_movies
+        elif dataset == "atis":
+            train_data = "../data/atis/wfst/train.txt"
+            concept_sentences = "../data/atis/wfst/concept_sentences.txt"
+            test_data = "../data/atis/wfst/test.txt"
+            class_vocab = class_vocab_atis
+
+        run(train_data, concept_sentences, test_data, gram, tech, class_vocab)
