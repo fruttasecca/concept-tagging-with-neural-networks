@@ -3,14 +3,20 @@ import numpy
 import pycrfsuite
 import sys
 
+"""
+File to run pycrfsuite on the movies dataset, arguments are the train file, the test file, and if to use the word and char embeddings
+features, embeddings are automatically imported from the data directory.
+The output of this script is a file named crf.txt containing the predictions, and  model saved "model", that
+can be later used with pycrsfuite.
+"""
 sys.path.append("..")  # to make data_manager visible from here
 from data_manager import w2v_matrix_vocab_generator
 
-w2v_vocab, w2v_weights = w2v_matrix_vocab_generator("../../data/w2v_trimmed.pickle")
-c2v_vocab, c2v_weights = w2v_matrix_vocab_generator("../../data/c2v_20.pickle")
+w2v_vocab, w2v_weights = w2v_matrix_vocab_generator("../../data/movies/w2v_trimmed.pickle")
+c2v_vocab, c2v_weights = w2v_matrix_vocab_generator("../../data/movies/c2v_20.pickle")
 
 
-def get_data(file1, file2):
+def get_data(file):
     """
     Get data files (without and with feats) and combine them in data.
 
@@ -19,23 +25,21 @@ def get_data(file1, file2):
     :return: Data, a list of lists, each one for a sentence.
     """
     data = []
-    with open(file1, "r") as f1:
-        with open(file2, "r") as f2:
-            curr = []
-            for line1, line2 in zip(f1, f2):
-                if len(line1) == 1:
-                    data.append(curr)
-                    curr = []
-                else:
-                    l1 = line1.split("\t")
-                    l2 = line2.split("\t")
-                    curr.append((l2[0], l2[1], l2[2][:-1], l1[1][:-1]))
+    with open(file, "r") as f:
+        curr = []
+        for line in f:
+            if len(line) == 1:
+                data.append(curr)
+                curr = []
+            else:
+                l = line.split(" ")
+                curr.append((l[0], l[2], l[1], l[-1][:-1]))
     return data
 
 
 def get_w2v_embedding(word):
     """
-    Return the w2v vector of a word.
+    Return the use_embeddings vector of a word.
 
     :param word:
     :return:
@@ -67,11 +71,11 @@ def get_c2v_embedding(c):
 
 def w2vfeatures(sent, i):
     """
-    Get w2v features for a word.
+    Get use_embeddings features for a word.
 
     :param sent:List of lists, each word in the sentence has a list of different elements (token, pos, lemma, etc).
     :param i: Which word we are getting features for.
-    :return:A dict of w2v features for the word.
+    :return:A dict of use_embeddings features for the word.
     """
     features = dict()
     w2v0 = get_w2v_embedding(sent[i][0])
@@ -127,7 +131,7 @@ def c2vfeatures(sent, i):
     """
     Get c2v features for a word.
 
-    :return:A dict of w2v features for the word.
+    :return:A dict of use_embeddings features for the word.
     """
     features = dict()
     word = sent[i][0]
@@ -144,7 +148,7 @@ def other_features(sent, i):
 
     :param sent:List of lists, each word in the sentence has a list of different elements (token, pos, lemma, etc).
     :param i: Which word we are getting features for.
-    :return:A dict of w2v features for the word.
+    :return:A dict of use_embeddings features for the word.
     """
     features = dict()
     word = sent[i][0]
@@ -218,7 +222,7 @@ def word2features(sent, i, w2v=True, c2v=True, other=True):
 
     :param sent:List of lists, each word in the sentence has a list of different elements (token, pos, lemma, etc).
     :param i: Which word we are getting character features for.
-    :param w2v: True if w2v features are to be added.
+    :param w2v: True if use_embeddings features are to be added.
     :param c2v: True if c2v features are to be added.
     :param other: True if other (non embedding related) features are to be added.
     :return:
@@ -234,8 +238,8 @@ def word2features(sent, i, w2v=True, c2v=True, other=True):
     return features
 
 
-def sent2features(sent):
-    return [word2features(sent, i, True, True, True) for i in range(len(sent))]
+def sent2features(sent, w2v):
+    return [word2features(sent, i, w2v, w2v, True) for i in range(len(sent))]
 
 
 def sent2labels(sent):
@@ -247,15 +251,22 @@ def sent2tokens(sent):
 
 
 if __name__ == "__main__":
-    train = get_data("../../data/NLSPARQL.train.data", "../../data/NLSPARQL.train.feats.txt")
-    test = get_data("../../data/NLSPARQL.test.data", "../../data/NLSPARQL.test.feats.txt")
+    if len(sys.argv) != 3 and len(sys.argv) != 4:
+        print(
+            "usage is:\n ./movies_run.py train_file test_file, or ./movies_run.py train_file test_file --use_embeddings to use "
+            "use_embeddings and char embeddings")
+    train, test = sys.argv[1], sys.argv[2]
+    use_embeddings = len(sys.argv) == 4 and sys.argv[3] == "--w2v"
+    train = get_data(train)
+    test = get_data(test)
 
     trainer = pycrfsuite.Trainer(verbose=True)
     # TRAINING
-    X_train = ([pycrfsuite.ItemSequence(sent2features(s)) for s in train])
+    X_train = ([pycrfsuite.ItemSequence(sent2features(s, use_embeddings)) for s in train])
+
     y_train = [sent2labels(s) for s in train]
 
-    X_test = ([pycrfsuite.ItemSequence(sent2features(s)) for s in test])
+    X_test = ([pycrfsuite.ItemSequence(sent2features(s, use_embeddings)) for s in test])
     y_test = [sent2labels(s) for s in test]
 
     for xseq, yseq in zip(X_train, y_train):
@@ -263,7 +274,7 @@ if __name__ == "__main__":
 
     trainer.set_params({
         'c1': 0.0,  # coefficient for L1 penalty
-        'c2': 0.20,  # coefficient for L2 penalty 0.2
+        'c2': 0.20,  # coefficient for L2 penalty
         'num_memories': 100,
         'max_iterations': 100,  # stop earlier
         'max_linesearch': 20,
@@ -283,7 +294,7 @@ if __name__ == "__main__":
     print("saving test data as crf.txt")
     with open("crf.txt", "w") as output:
         for sent in test:
-            predicted = tagger.tag(sent2features(sent))
+            predicted = tagger.tag(sent2features(sent, use_embeddings))
             correct = sent2labels(sent)
             tokens = sent2tokens(sent)
             for t, p, c in zip(tokens, predicted, correct):
