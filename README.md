@@ -6,6 +6,8 @@ The course is held by Professor Giuseppe Riccardi, the material can be found at 
 In this project we tried out concept tagging on two datasets, ATIS and NL-SPARQL, with many different
 architectures, the aim of the project was not to obtain the highest possible F1 score but to test the same task
 under many different models, taking into consideration the number of parameters, ease of setup, etc.
+
+
 For each type of model, we have tried to keep things easy and concise, so that anyone can either
 modify them and run on these datasets, or just copy the specific model they need and repurpose it for their own
 task.
