@@ -258,6 +258,137 @@ __class_vocab_movies = {'I-movie.name': 2, 'I-character.name': 17, 'I-movie.loca
                         'I-award.category': 42, 'I-movie.subject': 5, 'B-movie.type': 41}
 class_vocab_movies = DictWrapper(__class_vocab_movies)
 
+__class_vocab_atis = {
+    'I-airline_name': 18,
+    'B-stoploc.airport_code': 123,
+    'B-state_code': 88,
+    'B-meal_description': 76,
+    'B-fromloc.city_name': 3,
+    'B-day_number': 118,
+    'B-depart_date.month_name': 25,
+    'I-return_date.date_relative': 116,
+    'B-meal': 66,
+    'I-arrive_date.day_number': 34,
+    'B-depart_date.year': 62,
+    'B-fromloc.state_name': 41,
+    'B-mod': 77,
+    'B-depart_date.today_relative': 46,
+    'B-arrive_time.time_relative': 22,
+    'B-return_date.today_relative': 112,
+    'I-fromloc.city_name': 4,
+    'B-flight_mod': 47,
+    'B-day_name': 100,
+    'B-flight': 126,
+    'B-arrive_time.end_time': 55,
+    'I-flight_time': 84,
+    'B-flight_number': 2,
+    'I-fare_basis_code': 98,
+    'B-depart_time.start_time': 81,
+    'I-state_name': 124,
+    'B-arrive_date.day_name': 10,
+    'B-aircraft_code': 72,
+    'I-transport_type': 74,
+    'I-cost_relative': 15,
+    'B-arrive_time.start_time': 53,
+    'B-arrive_time.period_of_day': 50,
+    'I-time': 120,
+    'B-depart_date.date_relative': 51,
+    'B-flight_days': 59,
+    'I-return_date.day_number': 95,
+    'B-return_date.month_name': 93,
+    'B-return_date.day_name': 97,
+    'B-flight_stop': 21,
+    'I-toloc.city_name': 6,
+    'B-depart_time.time': 38,
+    'B-toloc.airport_name': 68,
+    'I-airport_name': 64,
+    'B-or': 44,
+    'B-arrive_time.period_mod': 9,
+    'I-arrive_time.time_relative': 89,
+    'B-airline_name': 1,
+    'B-depart_time.period_of_day': 11,
+    'B-economy': 60,
+    'B-compartment': 122,
+    'B-fromloc.airport_name': 12,
+    'I-fare_amount': 36,
+    'B-state_name': 105,
+    'B-stoploc.state_code': 20,
+    'B-class_type': 24,
+    'B-round_trip': 16,
+    'I-round_trip': 17,
+    'B-depart_time.period_mod': 40,
+    'I-depart_date.today_relative': 102,
+    'I-flight_stop': 75,
+    'I-return_date.today_relative': 113,
+    'I-class_type': 45,
+    'B-time': 110,
+    'B-stoploc.city_name': 19,
+    'B-fromloc.airport_code': 52,
+    'I-arrive_time.period_of_day': 108,
+    'I-depart_time.start_time': 86,
+    'B-restriction_code': 14,
+    'B-toloc.state_code': 29,
+    'B-fare_basis_code': 58,
+    'B-airport_code': 78,
+    'B-fromloc.state_code': 57,
+    'I-city_name': 31,
+    'B-fare_amount': 35,
+    'B-today_relative': 106,
+    'B-meal_code': 103,
+    'I-fromloc.airport_name': 13,
+    'B-days_code': 109,
+    'I-arrive_time.time': 28,
+    'I-flight_mod': 67,
+    'I-flight_number': 121,
+    'B-airport_name': 63,
+    'B-depart_date.day_number': 26,
+    'I-toloc.state_name': 80,
+    'B-transport_type': 73,
+    'B-arrive_date.today_relative': 85,
+    'I-stoploc.city_name': 65,
+    'I-meal_description': 114,
+    'B-arrive_time.time': 23,
+    'I-toloc.airport_name': 69,
+    'B-return_date.day_number': 94,
+    'B-return_time.period_of_day': 92,
+    'B-period_of_day': 101,
+    'B-cost_relative': 8,
+    'I-depart_time.time': 39,
+    'I-economy': 71,
+    'I-meal_code': 104,
+    'B-depart_date.day_name': 7,
+    'B-stoploc.airport_name': 111,
+    'I-today_relative': 107,
+    'I-depart_time.period_of_day': 99,
+    'B-toloc.city_name': 5,
+    'B-depart_time.end_time': 82,
+    'O': 0,
+    'B-arrive_date.month_name': 32,
+    'B-city_name': 27,
+    'B-time_relative': 119,
+    'B-arrive_date.date_relative': 90,
+    'I-arrive_time.end_time': 56,
+    'I-restriction_code': 70,
+    'B-depart_time.time_relative': 37,
+    'B-connect': 49,
+    'B-return_time.period_mod': 91,
+    'B-toloc.country_name': 96,
+    'B-booking_class': 125,
+    'B-month_name': 117,
+    'B-flight_time': 48,
+    'B-return_date.date_relative': 79,
+    'B-toloc.state_name': 43,
+    'I-depart_time.time_relative': 115,
+    'I-depart_date.day_number': 61,
+    'B-airline_code': 30,
+    'B-arrive_date.day_number': 33,
+    'I-fromloc.state_name': 42,
+    'I-arrive_time.start_time': 54,
+    'B-toloc.airport_code': 83,
+    'I-depart_time.end_time': 87,
+}
+class_vocab_atis = DictWrapper(__class_vocab_atis)
+
 
 def batch_sequence(batch):
     """
@@ -355,8 +486,8 @@ class InitTransform(object):
         self.c2v_vocab = c2v_vocab
         self.sequence = sequence
         self.class_vocab = class_vocab
-        self.pad_sentence_length = 25  # cap to longest sequence
-        self.pad_word_length = 16
+        self.pad_sentence_length = 50 #25  # cap to longest sequence
+        self.pad_word_length = 30
         global corrected
         self.corrected = corrected
 
@@ -378,7 +509,7 @@ class InitTransform(object):
                 vectors.append(self.w2v_vocab[word])
             elif word.title() in self.w2v_vocab:
                 vectors.append(self.w2v_vocab[word.title()])
-            elif word.isdigit():
+            elif word.isdigit() or word.find("DIGIT") != -1: #or any(char.isdigit() for char in word):
                 vectors.append(self.w2v_vocab["number"])
             elif word == "@card@":
                 vectors.append(self.w2v_vocab["number"])
@@ -428,7 +559,7 @@ class InitTransform(object):
                 vectors.append(vocab[word])
             elif word.title() in vocab:
                 vectors.append(vocab[word.title()])
-            elif word.isdigit():
+            elif word.isdigit() or word.find("DIGIT") != -1: #or any(char.isdigit() for char in word):
                 vectors.append(self.w2v_vocab["number"])
             elif word == "@card@":
                 vectors.append(self.w2v_vocab["number"])
