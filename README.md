@@ -1,5 +1,6 @@
 # Concept tagging with WFSTs, SVMs, CRFs, and neural networks
-This is the repository for the paper "Concept Tagging for Natural Language Understanding: Two Decadelong Algorithm Development", submitted at the CLiC 2018 congress (http://www.ilc.cnr.it/en/content/clic-it-2018).
+This is the repository for the paper "Concept Tagging for Natural Language Understanding: Two Decadelong Algorithm Development", http://arxiv.org/abs/1807.10661.
+Please refer to this paper when using this code for your papers or reports.
 It started as a course project for the course of Language Understanding Systems (2017-2018), part of the master course of computer science of the University of Trento.
 The course is held by Professor Giuseppe Riccardi, the material can be found at http://disi.unitn.it/~riccardi/page7/page13/page13.html.
 
