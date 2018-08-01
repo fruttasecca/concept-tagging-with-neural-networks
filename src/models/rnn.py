@@ -5,13 +5,13 @@ import torch.nn.functional as F
 import data_manager
 
 
-class Recurrent(nn.Module):
-    def __init__(self, w2v_weights, recurrent_mode, hidden_dim, tagset_size, drop_rate, bidirectional=False,
+class RNN(nn.Module):
+    def __init__(self, device, w2v_weights, hidden_dim, tagset_size, drop_rate, bidirectional=False,
                  freeze=True, embedding_norm=10., c2v_weights=None, pad_word_length=16):
         """
+        :param device: Device to which to map tensors (GPU or CPU).
         :param w2v_weights: Matrix of w2v w2v_weights, ith row contains the embedding for the word mapped to the ith index, the
         last row should correspond to the padding token, <padding>.
-        :param recurrent_mode: Which kind of recurrent layers to use, 'recurrent', 'gru', or 'rnn'.
         :param hidden_dim Size of the hidden dimension of the recurrent layer.
         :param tagset_size: Number of possible classes, this will be the dimension of the output vector.
         :param drop_rate: Drop rate for regularization.
@@ -24,8 +24,9 @@ class Recurrent(nn.Module):
         :param pad_word_length: Length to which each word is padded to, only used if c2v_weights has been passed and
         the network is going to use char representations, it is needed for the size of the maxpooling window.
         """
-        super(Recurrent, self).__init__()
+        super(RNN, self).__init__()
 
+        self.device = device
         self.hidden_dim = hidden_dim
         self.tagset_size = tagset_size
         self.embedding_dim = w2v_weights.shape[1]
@@ -43,18 +44,8 @@ class Recurrent(nn.Module):
 
         # The recurrent layer takes word embeddings as inputs, and outputs hidden states
         # with dimensionality hidden_dim.
-        if recurrent_mode == "recurrent":
-            self.recurrent = nn.LSTM(self.embedding_dim, self.hidden_dim // (1 if not self.bidirectional else 2),
-                                     batch_first=True, bidirectional=self.bidirectional)
-        elif recurrent_mode == "gru":
-            self.recurrent = nn.GRU(self.embedding_dim, self.hidden_dim // (1 if not self.bidirectional else 2),
-                                    batch_first=True, bidirectional=self.bidirectional)
-        elif recurrent_mode == "rnn":
-            self.recurrent = nn.RNN(self.embedding_dim, self.hidden_dim // (1 if not self.bidirectional else 2),
-                                    batch_first=True, bidirectional=self.bidirectional)
-        else:
-            print("Recurrent mode should be either: 'recurrent', 'gru', 'rnn'.")
-            exit()
+        self.recurrent = nn.RNN(self.embedding_dim, self.hidden_dim // (1 if not self.bidirectional else 2),
+                                batch_first=True, bidirectional=self.bidirectional)
 
         self.hidden2tag = nn.Sequential(
             nn.BatchNorm2d(1),
@@ -70,21 +61,9 @@ class Recurrent(nn.Module):
             self.char_embedding.max_norm = embedding_norm
             self.feats = 20  # for the output channels of the conv layers
 
-            if recurrent_mode == "recurrent":
-                self.recurrent = nn.LSTM(self.embedding_dim + 50,
-                                         self.hidden_dim // (1 if not self.bidirectional else 2),
-                                         batch_first=True, bidirectional=self.bidirectional)
-            elif recurrent_mode == "gru":
-                self.recurrent = nn.GRU(self.embedding_dim + 50,
-                                        self.hidden_dim // (1 if not self.bidirectional else 2),
-                                        batch_first=True, bidirectional=self.bidirectional)
-            elif recurrent_mode == "rnn":
-                self.recurrent = nn.RNN(self.embedding_dim + 50,
-                                        self.hidden_dim // (1 if not self.bidirectional else 2),
-                                        batch_first=True, bidirectional=self.bidirectional)
-            else:
-                print("Recurrent mode should be either: 'recurrent', 'gru', 'rnn'.")
-                exit()
+            self.recurrent = nn.RNN(self.embedding_dim + 50,
+                                    self.hidden_dim // (1 if not self.bidirectional else 2),
+                                    batch_first=True, bidirectional=self.bidirectional)
 
             # conv layers for single character, pairs of characters, 3x characters
             self.ngram1 = nn.Sequential(
@@ -131,23 +110,10 @@ class Recurrent(nn.Module):
         :param batch_size
         :return: Initialized hidden state of the recurrent encoder.
         """
-        if isinstance(self.recurrent, nn.LSTM):
-            if self.bidirectional:
-                state = [torch.zeros(self.recurrent.num_layers * 2, batch_size, self.hidden_dim // 2),
-                         torch.zeros(self.recurrent.num_layers * 2, batch_size, self.hidden_dim // 2)]
-            else:
-                state = [torch.zeros(self.recurrent.num_layers, batch_size, self.hidden_dim),
-                         torch.zeros(self.recurrent.num_layers, batch_size, self.hidden_dim)]
-            if next(self.parameters()).is_cuda:
-                state[0] = state[0].cuda()
-                state[1] = state[1].cuda()
+        if self.bidirectional:
+            state = torch.zeros(self.recurrent.num_layers * 2, batch_size, self.hidden_dim // 2).to(self.device)
         else:
-            if self.bidirectional:
-                state = torch.zeros(self.recurrent.num_layers * 2, batch_size, self.hidden_dim // 2)
-            else:
-                state = torch.zeros(self.recurrent.num_layers, batch_size, self.hidden_dim)
-            if next(self.parameters()).is_cuda:
-                state = state.cuda()
+            state = torch.zeros(self.recurrent.num_layers, batch_size, self.hidden_dim).to(self.device)
         return state
 
     def forward(self, batch):
@@ -161,7 +127,7 @@ class Recurrent(nn.Module):
         hidden = self.init_hidden(len(batch))
 
         # pack sentences and pass through rnn
-        data, labels, char_data = data_manager.batch_sequence(batch)
+        data, labels, char_data = data_manager.batch_sequence(batch, self.device)
         data = self.embedding(data)
         data = self.drop(data)
 
