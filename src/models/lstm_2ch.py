@@ -6,9 +6,10 @@ import data_manager
 
 
 class LSTMN2CH(nn.Module):
-    def __init__(self, w2v_weights, hidden_dim, tagset_size, drop_rate, bidirectional=False,
+    def __init__(self, device, w2v_weights, hidden_dim, tagset_size, drop_rate, bidirectional=False,
                  embedding_norm=10.):
         """
+        :param device: Device to which to map tensors (GPU or CPU).
         :param w2v_weights: Matrix of w2v w2v_weights, ith row contains the embedding for the word mapped to the ith index, the
         last row should correspond to the padding token, <padding>.
         :param hidden_dim Size of the hidden dimension of the recurrent layer.
@@ -19,6 +20,7 @@ class LSTMN2CH(nn.Module):
         """
         super(LSTMN2CH, self).__init__()
 
+        self.device = device
         self.hidden_dim = hidden_dim
         self.tagset_size = tagset_size
         self.embedding_dim = w2v_weights.shape[1]
@@ -52,14 +54,12 @@ class LSTMN2CH(nn.Module):
         :return: Initialized hidden state of the recurrent encoder.
         """
         if self.bidirectional:
-            state = [torch.zeros(self.recurrent_static.num_layers * 2, batch_size, self.hidden_dim // 4),
-                     torch.zeros(self.recurrent_static.num_layers * 2, batch_size, self.hidden_dim // 4)]
+            state = [
+                torch.zeros(self.recurrent_static.num_layers * 2, batch_size, self.hidden_dim // 4).to(self.device),
+                torch.zeros(self.recurrent_static.num_layers * 2, batch_size, self.hidden_dim // 4).to(self.device)]
         else:
-            state = [torch.zeros(self.recurrent_static.num_layers, batch_size, self.hidden_dim // 2),
-                     torch.zeros(self.recurrent_static.num_layers, batch_size, self.hidden_dim // 2)]
-        if next(self.parameters()).is_cuda:
-            state[0] = state[0].cuda()
-            state[1] = state[1].cuda()
+            state = [torch.zeros(self.recurrent_static.num_layers, batch_size, self.hidden_dim // 2).to(self.device),
+                     torch.zeros(self.recurrent_static.num_layers, batch_size, self.hidden_dim // 2).to(self.device)]
         return state
 
     def forward(self, batch):
@@ -67,7 +67,7 @@ class LSTMN2CH(nn.Module):
         hidden_dyn = self.init_hidden(len(batch))
 
         # embed using static embeddings and pass through the recurrent layer
-        data, labels, char_data = data_manager.batch_sequence(batch)
+        data, labels, char_data = data_manager.batch_sequence(batch, self.device)
         data_static = self.embedding_static(data)
         data_static = self.drop(data_static)
         lstm_out_static, hidden_static = self.recurrent_static(data_static, hidden_static)
