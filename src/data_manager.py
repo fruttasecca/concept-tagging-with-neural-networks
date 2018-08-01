@@ -1,5 +1,4 @@
 import random
-
 import pandas as pd
 import numpy as np
 import collections  # to make the class w2v_vocab read only
@@ -7,7 +6,7 @@ import torch
 from torch.utils.data import Dataset
 
 
-class pytorch_dataset(Dataset):
+class PytorchDataset(Dataset):
     """Dataset to import augmented data."""
 
     def __init__(self, pickle, init_transform, getitem_transform=None):
@@ -83,7 +82,8 @@ class Data(object):
     - properties that allow you to get counter maps for words, lemmas, pos tags, concepts, and pairs
     - properties that allow you to get words, lemmas, pos tags, concepts lexicon
     - methods that allow you to get the counter for a specific word, lemma, pos tags, concept or pair
-    note: this class is something i copy pasted from an old project of mine, not really that useful in here
+    note: this class is something i copy pasted from an old project of mine, not really that useful in here, mostly used
+    for the wfst script.
     """
 
     def __init__(self, file):
@@ -256,181 +256,117 @@ __class_vocab_movies = {'I-movie.name': 2, 'I-character.name': 17, 'I-movie.loca
                         'I-movie.gross_revenue': 25, 'I-country.name': 22, 'B-person.nationality': 39,
                         'I-director.name': 16,
                         'I-award.category': 42, 'I-movie.subject': 5, 'B-movie.type': 41}
+
 class_vocab_movies = DictWrapper(__class_vocab_movies)
 
-__class_vocab_atis = {
-    'I-airline_name': 18,
-    'B-stoploc.airport_code': 123,
-    'B-state_code': 88,
-    'B-meal_description': 76,
-    'B-fromloc.city_name': 3,
-    'B-day_number': 118,
-    'B-depart_date.month_name': 25,
-    'I-return_date.date_relative': 116,
-    'B-meal': 66,
-    'I-arrive_date.day_number': 34,
-    'B-depart_date.year': 62,
-    'B-fromloc.state_name': 41,
-    'B-mod': 77,
-    'B-depart_date.today_relative': 46,
-    'B-arrive_time.time_relative': 22,
-    'B-return_date.today_relative': 112,
-    'I-fromloc.city_name': 4,
-    'B-flight_mod': 47,
-    'B-day_name': 100,
-    'B-flight': 126,
-    'B-arrive_time.end_time': 55,
-    'I-flight_time': 84,
-    'B-flight_number': 2,
-    'I-fare_basis_code': 98,
-    'B-depart_time.start_time': 81,
-    'I-state_name': 124,
-    'B-arrive_date.day_name': 10,
-    'B-aircraft_code': 72,
-    'I-transport_type': 74,
-    'I-cost_relative': 15,
-    'B-arrive_time.start_time': 53,
-    'B-arrive_time.period_of_day': 50,
-    'I-time': 120,
-    'B-depart_date.date_relative': 51,
-    'B-flight_days': 59,
-    'I-return_date.day_number': 95,
-    'B-return_date.month_name': 93,
-    'B-return_date.day_name': 97,
-    'B-flight_stop': 21,
-    'I-toloc.city_name': 6,
-    'B-depart_time.time': 38,
-    'B-toloc.airport_name': 68,
-    'I-airport_name': 64,
-    'B-or': 44,
-    'B-arrive_time.period_mod': 9,
-    'I-arrive_time.time_relative': 89,
-    'B-airline_name': 1,
-    'B-depart_time.period_of_day': 11,
-    'B-economy': 60,
-    'B-compartment': 122,
-    'B-fromloc.airport_name': 12,
-    'I-fare_amount': 36,
-    'B-state_name': 105,
-    'B-stoploc.state_code': 20,
-    'B-class_type': 24,
-    'B-round_trip': 16,
-    'I-round_trip': 17,
-    'B-depart_time.period_mod': 40,
-    'I-depart_date.today_relative': 102,
-    'I-flight_stop': 75,
-    'I-return_date.today_relative': 113,
-    'I-class_type': 45,
-    'B-time': 110,
-    'B-stoploc.city_name': 19,
-    'B-fromloc.airport_code': 52,
-    'I-arrive_time.period_of_day': 108,
-    'I-depart_time.start_time': 86,
-    'B-restriction_code': 14,
-    'B-toloc.state_code': 29,
-    'B-fare_basis_code': 58,
-    'B-airport_code': 78,
-    'B-fromloc.state_code': 57,
-    'I-city_name': 31,
-    'B-fare_amount': 35,
-    'B-today_relative': 106,
-    'B-meal_code': 103,
-    'I-fromloc.airport_name': 13,
-    'B-days_code': 109,
-    'I-arrive_time.time': 28,
-    'I-flight_mod': 67,
-    'I-flight_number': 121,
-    'B-airport_name': 63,
-    'B-depart_date.day_number': 26,
-    'I-toloc.state_name': 80,
-    'B-transport_type': 73,
-    'B-arrive_date.today_relative': 85,
-    'I-stoploc.city_name': 65,
-    'I-meal_description': 114,
-    'B-arrive_time.time': 23,
-    'I-toloc.airport_name': 69,
-    'B-return_date.day_number': 94,
-    'B-return_time.period_of_day': 92,
-    'B-period_of_day': 101,
-    'B-cost_relative': 8,
-    'I-depart_time.time': 39,
-    'I-economy': 71,
-    'I-meal_code': 104,
-    'B-depart_date.day_name': 7,
-    'B-stoploc.airport_name': 111,
-    'I-today_relative': 107,
-    'I-depart_time.period_of_day': 99,
-    'B-toloc.city_name': 5,
-    'B-depart_time.end_time': 82,
-    'O': 0,
-    'B-arrive_date.month_name': 32,
-    'B-city_name': 27,
-    'B-time_relative': 119,
-    'B-arrive_date.date_relative': 90,
-    'I-arrive_time.end_time': 56,
-    'I-restriction_code': 70,
-    'B-depart_time.time_relative': 37,
-    'B-connect': 49,
-    'B-return_time.period_mod': 91,
-    'B-toloc.country_name': 96,
-    'B-booking_class': 125,
-    'B-month_name': 117,
-    'B-flight_time': 48,
-    'B-return_date.date_relative': 79,
-    'B-toloc.state_name': 43,
-    'I-depart_time.time_relative': 115,
-    'I-depart_date.day_number': 61,
-    'B-airline_code': 30,
-    'B-arrive_date.day_number': 33,
-    'I-fromloc.state_name': 42,
-    'I-arrive_time.start_time': 54,
-    'B-toloc.airport_code': 83,
-    'I-depart_time.end_time': 87,
-}
+__class_vocab_atis = {'I-airline_name': 18, 'B-stoploc.airport_code': 123, 'B-state_code': 88, 'B-meal_description': 76,
+                      'B-fromloc.city_name': 3, 'B-day_number': 118, 'B-depart_date.month_name': 25,
+                      'I-return_date.date_relative': 116,
+                      'B-meal': 66, 'I-arrive_date.day_number': 34, 'B-depart_date.year': 62,
+                      'B-fromloc.state_name': 41, 'B-mod': 77,
+                      'B-depart_date.today_relative': 46, 'B-arrive_time.time_relative': 22,
+                      'B-return_date.today_relative': 112,
+                      'I-fromloc.city_name': 4, 'B-flight_mod': 47, 'B-day_name': 100, 'B-flight': 126,
+                      'B-arrive_time.end_time': 55,
+                      'I-flight_time': 84, 'B-flight_number': 2, 'I-fare_basis_code': 98,
+                      'B-depart_time.start_time': 81,
+                      'I-state_name': 124, 'B-arrive_date.day_name': 10, 'B-aircraft_code': 72, 'I-transport_type': 74,
+                      'I-cost_relative': 15, 'B-arrive_time.start_time': 53, 'B-arrive_time.period_of_day': 50,
+                      'I-time': 120, 'B-depart_date.date_relative': 51, 'B-flight_days': 59,
+                      'I-return_date.day_number': 95,
+                      'B-return_date.month_name': 93, 'B-return_date.day_name': 97, 'B-flight_stop': 21,
+                      'I-toloc.city_name': 6,
+                      'B-depart_time.time': 38, 'B-toloc.airport_name': 68, 'I-airport_name': 64, 'B-or': 44,
+                      'B-arrive_time.period_mod': 9,
+                      'I-arrive_time.time_relative': 89, 'B-airline_name': 1, 'B-depart_time.period_of_day': 11,
+                      'B-economy': 60,
+                      'B-compartment': 122, 'B-fromloc.airport_name': 12, 'I-fare_amount': 36, 'B-state_name': 105,
+                      'B-stoploc.state_code': 20, 'B-class_type': 24, 'B-round_trip': 16, 'I-round_trip': 17,
+                      'B-depart_time.period_mod': 40,
+                      'I-depart_date.today_relative': 102, 'I-flight_stop': 75, 'I-return_date.today_relative': 113,
+                      'I-class_type': 45, 'B-time': 110, 'B-stoploc.city_name': 19, 'B-fromloc.airport_code': 52,
+                      'I-arrive_time.period_of_day': 108, 'I-depart_time.start_time': 86, 'B-restriction_code': 14,
+                      'B-toloc.state_code': 29, 'B-fare_basis_code': 58, 'B-airport_code': 78,
+                      'B-fromloc.state_code': 57,
+                      'I-city_name': 31, 'B-fare_amount': 35, 'B-today_relative': 106, 'B-meal_code': 103,
+                      'I-fromloc.airport_name': 13,
+                      'B-days_code': 109, 'I-arrive_time.time': 28, 'I-flight_mod': 67, 'I-flight_number': 121,
+                      'B-airport_name': 63, 'B-depart_date.day_number': 26, 'I-toloc.state_name': 80,
+                      'B-transport_type': 73,
+                      'B-arrive_date.today_relative': 85, 'I-stoploc.city_name': 65, 'I-meal_description': 114,
+                      'B-arrive_time.time': 23,
+                      'I-toloc.airport_name': 69, 'B-return_date.day_number': 94, 'B-return_time.period_of_day': 92,
+                      'B-period_of_day': 101,
+                      'B-cost_relative': 8, 'I-depart_time.time': 39, 'I-economy': 71, 'I-meal_code': 104,
+                      'B-depart_date.day_name': 7,
+                      'B-stoploc.airport_name': 111, 'I-today_relative': 107, 'I-depart_time.period_of_day': 99,
+                      'B-toloc.city_name': 5, 'B-depart_time.end_time': 82, 'O': 0, 'B-arrive_date.month_name': 32,
+                      'B-city_name': 27, 'B-time_relative': 119, 'B-arrive_date.date_relative': 90,
+                      'I-arrive_time.end_time': 56,
+                      'I-restriction_code': 70, 'B-depart_time.time_relative': 37, 'B-connect': 49,
+                      'B-return_time.period_mod': 91,
+                      'B-toloc.country_name': 96, 'B-booking_class': 125, 'B-month_name': 117, 'B-flight_time': 48,
+                      'B-return_date.date_relative': 79, 'B-toloc.state_name': 43, 'I-depart_time.time_relative': 115,
+                      'I-depart_date.day_number': 61, 'B-airline_code': 30, 'B-arrive_date.day_number': 33,
+                      'I-fromloc.state_name': 42, 'I-arrive_time.start_time': 54, 'B-toloc.airport_code': 83,
+                      'I-depart_time.end_time': 87}
+
 class_vocab_atis = DictWrapper(__class_vocab_atis)
 
 
-def batch_sequence(batch):
+def batch_sequence(batch, device):
     """
     Given a batch return sequence data, labels and chars data (if present) in a "batched" way, as a tensor
     where the first dimension is the dimension of the batch.
-    :param batch: List of sample points, each sample point should contain "sequence" and "concepts" data, list
+    :param batch: List of sample points, each sample point should contain "tokens" and "concepts" data, list
     of integers, it may also contain "chars" data, which is a list of integers.
     """
-    list_of_data_tensors = [sample["sequence"].unsqueeze(0) for sample in batch]
-    data = torch.cat(list_of_data_tensors, dim=0).cuda()
+    list_of_data_tensors = [sample["tokens"].unsqueeze(0) for sample in batch]
+    data = torch.cat(list_of_data_tensors, dim=0)
     list_of_labels_tensors = [sample["concepts"].unsqueeze(0) for sample in batch]
-    labels = torch.cat(list_of_labels_tensors, dim=0).cuda()
+    labels = torch.cat(list_of_labels_tensors, dim=0)
     char_data = None
     if "chars" in batch[0]:
         list_of_char_data_tensors = [sample["chars"] for sample in batch]
-        char_data = torch.cat(list_of_char_data_tensors, dim=0).cuda()
-    return data, labels, char_data
+        char_data = torch.cat(list_of_char_data_tensors, dim=0).to(device)
+    return data.to(device), labels.to(device), char_data
 
 
 class DropTransform(object):
     """ Transformer class to be passed to the pytorch dataset class to transform data at run time, it randomly
     drops word indexes to 'simulate' unknown words."""
 
-    def __init__(self, drop_chance, unk_idx, ignore_idx):
+    def __init__(self, drop_chance, unk_idx, preserve_idx):
         """
         :param drop_chance: Chance of dropping a word.
         :param unk_idx: Which index to use in place of the one of the dropped word.
-        :param ignore_idx: Index to never drop (i.e. the padding index).
+        :param preserve_idx: Index to never drop (i.e. the padding index).
         """
         self.drop_chance = drop_chance
         self.unk_idx = unk_idx
-        self.ignore_idx = ignore_idx
+        self.preserve_idx = preserve_idx
 
-    def might_drop(self, idx):
-        return self.unk_idx if (random.uniform(0, 1) < self.drop_chance and idx != self.ignore_idx) else idx
+    def _might_drop(self, idx):
+        """
+        Drop idx by chance and if its not the index to preserve.
+        :param idx:
+        :return:
+        """
+        return self.unk_idx if (random.uniform(0, 1) < self.drop_chance and idx != self.preserve_idx) else idx
 
     def __call__(self, sample):
+        """
+        Get a sample, concepts and char embeddings idxs (if present) are preserved, each token is instead
+        replaced by a chance equal to self._drop_chance.
+
+        :param sample:
+        :return:
+        """
         tsample = dict()
-        seq = sample["sequence"].clone()
+        seq = sample["tokens"].clone()
         for i in range(len(seq)):
-            seq[i] = self.might_drop(seq[i].item())
-        tsample["sequence"] = seq
+            seq[i] = self._might_drop(sample["tokens"][i].item())
+        tsample["tokens"] = seq
         tsample["concepts"] = sample["concepts"]
         tsample["sequence_extra"] = sample["sequence_extra"]
         if "chars" in sample:
@@ -438,80 +374,42 @@ class DropTransform(object):
         return tsample
 
 
-corrected = {
-    "pg-13": "rating",
-    "r-rated": "rating",
-    "nc-17": "rating",
-    "g-rated": "rating",
-    "paranorman": "paranormal",
-    "seventieseven": "number",
-    "adventeurous": "adventurous",
-    "beautfiul": "beautiful",
-    "translyvania": "transylvania",
-    "descrbe": "describe",
-    "realese": "release",
-    "japaneese": "japanese",
-    "spilberg": "spielberg",
-    "terantino": "tarantino",
-    "realase": "release",
-    "procuce": "produced",
-    "charactors": "characters",
-    "scorscese": "scorsese",
-    "transylavania": "transylvania",
-    "highest-grossing": "grossing",
-    "antogonist": "antagoinsit",
-    "directort": "director",
-    "funnie": "funny",
-    "co-star": "star",
-    "avergers": "avengers",
-    "!": "exclamation_mark",
-    ":": "punctuation",
-    "-": "punctuation",
-}
-
-
 class InitTransform(object):
     """ Transformer class to be passed to the pytorch dataset class to transform data at import time. """
 
-    def __init__(self, sequence, w2v_vocab, class_vocab, c2v_vocab=None):
+    def __init__(self, device, w2v_vocab, class_vocab, c2v_vocab=None, sentence_length_cap=50, word_length_cap=30, add_matrix=True):
         """
-        :param sequence: Which sequence data to use.
         :param w2v_vocab: Dict mapping strings to their w2v index (of the w2v_weights matrix passed to the constructor
         of the neural network class).
         :param class_vocab: Dictionary that maps classes from column "concepts" to an integer.
-        :param w2v_vocab: Dict mapping chars to their c2v index (of the c2v_weights matrix passed to the constructor
+        :param c2v_vocab: Dict mapping chars to their c2v index (of the c2v_weights matrix passed to the constructor
         of the neural network class).
         """
+        self.device = device
         self.w2v_vocab = w2v_vocab
         self.c2v_vocab = c2v_vocab
-        self.sequence = sequence
         self.class_vocab = class_vocab
-        self.pad_sentence_length = 50 #25  # cap to longest sequence
-        self.pad_word_length = 30
-        global corrected
-        self.corrected = corrected
+        self.pad_sentence_length = sentence_length_cap
+        self.pad_word_length = word_length_cap
+        self.add_matrix = add_matrix
 
-    def to_w2v_indexes(self, sentence):
+    def _to_w2v_indexes(self, sentence):
         """
         Given a list of strings returns a tensor of shape (length of sentence).
         For each string in the sentence the corresponding w2v index that is going to be part of the final tensor
         is obtained from the w2v vocabulary if there exist a word-index pair, otherwise the word is either treated
-        as <unk>.
+        as <unk>, returning the <unk> idx.
         :param sentence: List of strings.
         :return: Tensor of shape (length of sentence) containing w2v indexes for each word in the sentence.
         """
 
         vectors = []
         for word in sentence:
-            if word in self.corrected:
-                word = self.corrected[word]
             if word in self.w2v_vocab:
                 vectors.append(self.w2v_vocab[word])
             elif word.title() in self.w2v_vocab:
                 vectors.append(self.w2v_vocab[word.title()])
-            elif word.isdigit() or word.find("DIGIT") != -1: #or any(char.isdigit() for char in word):
-                vectors.append(self.w2v_vocab["number"])
-            elif word == "@card@":
+            elif word.isdigit() or word.find("DIGIT") != -1:
                 vectors.append(self.w2v_vocab["number"])
             else:
                 vectors.append(self.w2v_vocab["<UNK>"])
@@ -522,11 +420,11 @@ class InitTransform(object):
             vectors.extend([self.w2v_vocab["<padding>"]] * (self.pad_sentence_length - len(vectors)))
         return torch.LongTensor(vectors)
 
-    def to_vocab_indexes(self, dictionary, sentence):
+    def _to_vocab_indexes(self, dictionary, sentence):
         """
         Given a dictionary mapping words to an index returns a tensor of shape (length of sentence) containing
         the indexes of those words.
-        Assumes each word in the sentence has a mapping.
+        Assumes each word in the sentence has a mapping (this is usually used for concepts).
         :param dictionary: Dict mapping words in sentence to an index, must contain every word in sentence.
         :param sentence: List of strings.
         :return: Tensor of indexes.
@@ -538,13 +436,13 @@ class InitTransform(object):
             idxs.extend([-1] * (self.pad_sentence_length - len(idxs)))
         return torch.tensor(idxs, dtype=torch.long)
 
-    def to_matrix(self, sentence, vocab, pad_length):
+    def _to_matrix(self, sentence, vocab, pad_length):
         """
         Given a list of strings returns a tensor of shape (1, padded length, 1).
         The length of the sentence is padded if it does not reach pad_length.
         For each string in the sentence the corresponding w2v (or c2v) index that is going to be part of the final tensor
-        is obtained from the ocabulary if there exist a word-index pair, otherwise the word is either treated
-        as <unk> or <padding> (if it is a padding word) and their index is used.
+        is obtained from the vocabulary if there exist a word-index pair, otherwise the word is either treated
+        as <UNK> or <padding> (if it is a padding word) and their index is used.
         :param sentence: List of strings.
         :param vocab: Dict mapping strings to an index.
         :param pad_length: Length to which sentences (list of strings) will be padded to by using the index vocab["<padding>"].
@@ -553,13 +451,11 @@ class InitTransform(object):
 
         vectors = []
         for word in sentence:
-            if word in self.corrected:
-                word = self.corrected[word]
             if word in vocab:
                 vectors.append(vocab[word])
             elif word.title() in vocab:
                 vectors.append(vocab[word.title()])
-            elif word.isdigit() or word.find("DIGIT") != -1: #or any(char.isdigit() for char in word):
+            elif word.isdigit() or word.find("DIGIT") != -1:  # or any(char.isdigit() for char in word):
                 vectors.append(self.w2v_vocab["number"])
             elif word == "@card@":
                 vectors.append(self.w2v_vocab["number"])
@@ -572,7 +468,7 @@ class InitTransform(object):
         tensor = torch.tensor(vectors).view(1, pad_length)
         return tensor
 
-    def words_to_char_embeddings(self, sentence):
+    def _words_to_char_embeddings(self, sentence):
         """
         Given a sentence, return a tensor of size (1, 1, padded sentence length, padded word length) where
         values are indexes of char embeddings from the c2v vocab.
@@ -583,7 +479,7 @@ class InitTransform(object):
         res = torch.zeros(1, 1, self.pad_sentence_length, self.pad_word_length).long()
         curr_word = 0
         for word in sentence:
-            char_matrix = self.to_matrix(word, self.c2v_vocab, self.pad_word_length)
+            char_matrix = self._to_matrix(word, self.c2v_vocab, self.pad_word_length)
             res[0, 0, curr_word, :] = char_matrix[0, :]
             tensors_list.append(char_matrix)
             curr_word += 1
@@ -591,10 +487,27 @@ class InitTransform(object):
         return res
 
     def __call__(self, sample):
+        """
+        Given a sample, a dict which has keys:
+        "tokens" : mapping to list of strings (tokens)
+        "concepts" : mapping to list of strings (concepts)
+        return a transformed sample, which is another dict, which has keys:
+        "tokens" : mapping to a list of w2v indices of the tokens in the sample
+        "concepts" : mapping to a list of indices which represent classes (concepts in the sample)
+        if the instance of class was init with add_matrix=True the transformed sample will also contain:
+            "sequence_extra": mapping to a matrix of shape (1, length of words (padded)), containing w2v indices of the tokens
+        if the instance of class was init with c2v_vocab different than None the transformed sample will also contain:
+            "chars" : mapping to a matrix of #tokens in the sentence (padded) * characters in each token (padded), in order
+            to later use c2v embeddings with convolution 
+        passed with the sample, put in this way in order to later use w2v embeddings with convolution.
+        :param sample:dict with sequence and concepts keys, mapping to list of strings.
+        :return:
+        """
         tsample = dict()
-        tsample["sequence"] = self.to_w2v_indexes(sample[self.sequence])
-        tsample["concepts"] = self.to_vocab_indexes(self.class_vocab, sample["concepts"])
-        tsample["sequence_extra"] = self.to_matrix(sample[self.sequence], self.w2v_vocab, self.pad_sentence_length)
+        tsample["tokens"] = self._to_w2v_indexes(sample["tokens"])
+        tsample["concepts"] = self._to_vocab_indexes(self.class_vocab, sample["concepts"])
+        if self.add_matrix:
+            tsample["sequence_extra"] = self._to_matrix(sample["tokens"], self.w2v_vocab, self.pad_sentence_length)
         if self.c2v_vocab is not None:
-            tsample["chars"] = self.words_to_char_embeddings(sample[self.sequence])
+            tsample["chars"] = self._words_to_char_embeddings(sample["tokens"])
         return tsample

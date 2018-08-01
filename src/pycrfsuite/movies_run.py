@@ -254,7 +254,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 3 and len(sys.argv) != 4:
         print(
             "usage is:\n ./movies_run.py train_file test_file, or ./movies_run.py train_file test_file --use_embeddings to use "
-            "use_embeddings and char embeddings")
+            "w2v embeddings and char embeddings")
     train, test = sys.argv[1], sys.argv[2]
     use_embeddings = len(sys.argv) == 4 and sys.argv[3] == "--w2v"
     train = get_data(train)
