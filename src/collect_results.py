@@ -1,13 +1,19 @@
 #!/usr/bin/python3
 import os
+import sys
 import operator
 import numpy as np
+
+"""
+Script to collect f1 scores of different output files that are in the provided directory, the directory must contain
+the evaluation script conlleval.pl and will afterwards contain f1.scores, with the results."
+"""
 
 
 def collect_results():
     """
     Collects the results in a directory (output files, i.e. random.txt), writing them in a file
-    named f1.scores in the work directory.
+    named f1.scores in the same directory.
     """
     # list of strings of the form "parameters: f1"
     res = dict()
@@ -27,7 +33,7 @@ def collect_results():
     for file in sorted(os.listdir("f1")):
         if file.endswith(".txt"):
             with open("f1/" + file, "r") as input:
-                name = file.split(".")[0]
+                name = file  # file.split(".")[0]
                 for line in input:
                     res[name] = float(line.strip("\n"))
 
@@ -43,12 +49,14 @@ def collect_results():
     os.system("rm -r f1")
 
 
-# get to directory and for each sub directory collect results
-os.chdir("../output/error_bars")
-cwd = os.getcwd()
-dirs = [cwd + "/" + x[0] for x in os.walk(".")]
-for dir in dirs:
-    if dir[-1] != ".":
-        print(dir)
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: \n./collect_results path \nWhere path is a directory containing .txt files with predictions; "
+              "this script will collect the F1 score of each prediction file and report them in a file called "
+              "f1.scores; the directory needs to contain the evaluation script conlleval.pl.")
+        exit()
+    else:
+        # get to directory and for each sub directory collect results
+        dir = sys.argv[1]
         os.chdir(dir)
         collect_results()
