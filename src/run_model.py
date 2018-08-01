@@ -187,7 +187,7 @@ def train_model(train_data, model, class_vocab, dev_data=None, batch_size=80, lr
             write_predictions(y_true, y_true, y_predicted, "../output/%s/train_pred.txt" % params["dataset"], True,
                               class_vocab)
             os.system("../output/%s/conlleval.pl < ../output/%s/train_pred.txt | head -n2" % (
-            params["dataset"], params["dataset"]))
+                params["dataset"], params["dataset"]))
             os.system("rm ../output/%s/train_pred.txt" % params["dataset"])
 
         # if we passed dev train_data to it evaluate on it and report, else keep training
@@ -344,21 +344,21 @@ def pick_model_transform(params):
 
     if params["model"] == "lstm":
         model = lstm.LSTM(device, w2v_weights, params["hidden_size"], len(class_vocab),
-                                    params["drop"],
-                                    params["bidirectional"], not params["unfreeze"], params["embedding_norm"],
-                                    c2v_weights, 30)
-    elif params["model"] == "gru":
-        model = gru.GRU(device, w2v_weights, params["hidden_size"], len(class_vocab),
                           params["drop"],
                           params["bidirectional"], not params["unfreeze"], params["embedding_norm"],
                           c2v_weights, 30)
+    elif params["model"] == "gru":
+        model = gru.GRU(device, w2v_weights, params["hidden_size"], len(class_vocab),
+                        params["drop"],
+                        params["bidirectional"], not params["unfreeze"], params["embedding_norm"],
+                        c2v_weights, 30)
     elif params["model"] == "rnn":
         model = rnn.RNN(device, w2v_weights, params["hidden_size"], len(class_vocab),
                         params["drop"],
                         params["bidirectional"], not params["unfreeze"], params["embedding_norm"],
                         c2v_weights, 30)
     elif params["model"] == "lstm2ch":
-        model = lstm_2ch.LSTMN2CH(w2v_weights, params["hidden_size"], len(class_vocab), params["drop"],
+        model = lstm_2ch.LSTMN2CH(device, w2v_weights, params["hidden_size"], len(class_vocab), params["drop"],
                                   params["bidirectional"], params["embedding_norm"])
     elif params["model"] == "encoder":
         tag_embedding_size = 20
@@ -427,10 +427,10 @@ if __name__ == "__main__":
 
         model.eval()
         predictions = predict(model, dev_data)
-        dev_pickle = pd.read_pickle(dev_file)
+        dev_pickle = pd.read_pickle(dev_file[0])
         if params["write_results"] is not None:
-            write_predictions(dev_pickle["tokens"].values, dev_pickle["concepts"].values, predictions, False,
-                              params["write_results"], class_vocab)
+            write_predictions(dev_pickle["tokens"].values, dev_pickle["concepts"].values, predictions,
+                              params["write_results"], False, class_vocab)
 
         if params["save_model"] is not None:
             torch.save(model.state_dict(), params["save_model"])
@@ -445,12 +445,13 @@ if __name__ == "__main__":
 
         train_data = PytorchDataset(train_files, init_data_transform, run_data_transform)
         print("training")
-        train_model(train_data, model, class_vocab, None, params["batch"], params["lr"], params["epochs"], params["decay"])
+        train_model(train_data, model, class_vocab, None, params["batch"], params["lr"], params["epochs"],
+                    params["decay"])
         del train_data
 
         print("testing")
         test_data = PytorchDataset(test_file, init_data_transform)
-        test_pickle = pd.read_pickle(test_file)
+        test_pickle = pd.read_pickle(test_file[0])
         model.eval()
         predictions = predict(model, test_data)
         if params["write_results"] is not None:
