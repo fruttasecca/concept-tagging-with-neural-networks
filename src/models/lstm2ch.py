@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import data_manager
 
 
-class LSTMN2CH(nn.Module):
+class LSTM2CH(nn.Module):
     def __init__(self, device, w2v_weights, hidden_dim, tagset_size, drop_rate, bidirectional=False,
                  embedding_norm=10.):
         """
@@ -18,7 +18,7 @@ class LSTMN2CH(nn.Module):
         :param bidirectional: If the recurrent should be bidirectional.
         :param embedding_norm: Max norm of the dynamic embeddings.
         """
-        super(LSTMN2CH, self).__init__()
+        super(LSTM2CH, self).__init__()
 
         self.device = device
         self.hidden_dim = hidden_dim

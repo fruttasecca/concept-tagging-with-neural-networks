@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import os
+import random
 
 import pandas as pd
 import numpy as np
@@ -12,7 +13,17 @@ from torch.utils.data import DataLoader
 
 import data_manager
 from data_manager import PytorchDataset, w2v_matrix_vocab_generator
-from models import lstm, gru, rnn, lstm_2ch, encoder, attention, conv, init_hidden, lstmcrf
+from models import lstm, gru, rnn, lstm2ch, encoder, attention, conv, fcinit, lstmcrf
+
+
+def worker_init(*args):
+    """
+    Init functions for data loader workers.
+    :param args:
+    :return:
+    """
+    random.seed(1337)
+    np.random.seed(1337)
 
 
 def predict(model, train_data):
@@ -25,7 +36,7 @@ def predict(model, train_data):
     y_predicted = []
 
     dataloader = DataLoader(train_data, 1, shuffle=False, num_workers=4, drop_last=False, pin_memory=True,
-                            collate_fn=lambda x: x)
+                            collate_fn=lambda x: x, worker_init_fn=worker_init)
     for batch in dataloader:
         current = []
 
@@ -49,7 +60,6 @@ def write_predictions(tokens, labels, predictions, path, is_indexes, class_vocab
     :param labels:
     :param predictions:
     :param path:
-    :param indexed_labels:
     :return:
     """
     index_to_class = {v: k for k, v in class_vocab.items()}
@@ -74,7 +84,7 @@ def evaluate_model(dev_data, model, class_vocab, batch_size):
     y_true = []
 
     dataloader = DataLoader(dev_data, batch_size, shuffle=True, num_workers=4, drop_last=False, pin_memory=True,
-                            collate_fn=lambda x: x)
+                            collate_fn=lambda x: x, worker_init_fn=worker_init)
 
     for batch in dataloader:
 
@@ -133,7 +143,7 @@ def train_model(train_data, model, class_vocab, dev_data=None, batch_size=80, lr
     starting_time = time.time()
 
     dataloader = DataLoader(train_data, batch_size, shuffle=True, num_workers=4, drop_last=False, pin_memory=True,
-                            collate_fn=lambda x: x)
+                            collate_fn=lambda x: x, worker_init_fn=worker_init)
 
     for epoch in range(epochs):
         # setup current epoch train_data
@@ -145,7 +155,7 @@ def train_model(train_data, model, class_vocab, dev_data=None, batch_size=80, lr
 
         # train
         model.zero_grad()
-        for batch in dataloader:
+        for batch in dataloader::worker_init()
 
             # predict and check error
             if isinstance(model, lstmcrf.LstmCrf):
@@ -257,7 +267,7 @@ def parse_args(args):
         sys.exit(2)
 
     # possible values for target classes, possible values for models to use, possible modes
-    possible_models = ["lstm", "rnn", "gru", "lstm2ch", "encoder", "attention", "conv", "init_hidden", "lstmcrf"]
+    possible_models = ["lstm", "rnn", "gru", "lstm2ch", "encoder", "attention", "conv", "fcinit", "lstmcrf"]
     possible_datasets = ["movies", "atis"]
 
     opts = dict(opts)
@@ -358,35 +368,34 @@ def pick_model_transform(params):
                         params["bidirectional"], not params["unfreeze"], params["embedding_norm"],
                         c2v_weights, 30)
     elif params["model"] == "lstm2ch":
-        model = lstm_2ch.LSTMN2CH(device, w2v_weights, params["hidden_size"], len(class_vocab), params["drop"],
-                                  params["bidirectional"], params["embedding_norm"])
+        model = lstm2ch.LSTM2CH(device, w2v_weights, params["hidden_size"], len(class_vocab), params["drop"],
+                                params["bidirectional"], params["embedding_norm"])
     elif params["model"] == "encoder":
         tag_embedding_size = 20
-        model = encoder.EncoderDecoderRNN(w2v_weights, tag_embedding_size, params["hidden_size"],
+        model = encoder.EncoderDecoderRNN(device, w2v_weights, tag_embedding_size, params["hidden_size"],
                                           len(class_vocab), params["drop"], params["bidirectional"],
                                           not params["unfreeze"], params["embedding_norm"],
                                           params["embedding_norm"])
     elif params["model"] == "attention":
         tag_embedding_size = 20
         padded_sentence_length = 50
-        model = attention.Attention(w2v_weights, "gru", tag_embedding_size, params["hidden_size"],
-                                    len(class_vocab),
-                                    params["drop"], params["bidirectional"], not params["unfreeze"],
+        model = attention.Attention(device, w2v_weights, tag_embedding_size, params["hidden_size"],
+                                    len(class_vocab), params["drop"], params["bidirectional"], not params["unfreeze"],
                                     params["embedding_norm"], params["embedding_norm"],
                                     padded_sentence_length=padded_sentence_length)
     elif params["model"] == "conv":
         padded_sentence_length = 50
-        model = conv.CNN(w2v_weights, params["hidden_size"], len(class_vocab), padded_sentence_length,
-                         params["drop"], params["bidirectional"], not params["unfreeze"],
-                         params["embedding_norm"])
-    elif params["model"] == "init_hidden":
+        model = conv.CONV(device, w2v_weights, params["hidden_size"], len(class_vocab), padded_sentence_length,
+                          params["drop"], params["bidirectional"], not params["unfreeze"],
+                          params["embedding_norm"])
+    elif params["model"] == "fcinit":
         padded_sentence_length = 50
-        model = init_hidden.INIT(w2v_weights, params["hidden_size"], len(class_vocab),
-                                 padded_sentence_length,
-                                 params["drop"], params["bidirectional"], not params["unfreeze"],
-                                 params["embedding_norm"])
+        model = fcinit.FCINIT(device, w2v_weights, params["hidden_size"], len(class_vocab),
+                              padded_sentence_length,
+                              params["drop"], params["bidirectional"], not params["unfreeze"],
+                              params["embedding_norm"])
     elif params["model"] == "lstmcrf":
-        model = lstmcrf.LstmCrf(w2v_weights, class_vocab, params["hidden_size"], params["drop"],
+        model = lstmcrf.LstmCrf(device, w2v_weights, class_vocab, params["hidden_size"], params["drop"],
                                 params["bidirectional"], not params["unfreeze"], params["embedding_norm"], c2v_weights,
                                 30)
 
@@ -399,6 +408,8 @@ def pick_model_transform(params):
 
 
 if __name__ == "__main__":
+    random.seed(1337)
+    np.random.seed(1337)
     params = parse_args(sys.argv[1:])
 
     # used to transform data once imported

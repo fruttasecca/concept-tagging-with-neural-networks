@@ -7,9 +7,10 @@ import data_manager
 
 class EncoderDecoderRNN(nn.Module):
 
-    def __init__(self, w2v_weights, decoder_embedding_size, hidden_dim, tagset_size, drop_rate=0.5, bidirectional=False,
+    def __init__(self, device, w2v_weights, decoder_embedding_size, hidden_dim, tagset_size, drop_rate=0.5, bidirectional=False,
                  freeze=True, max_norm_emb1=10, max_norm_emb2=10):
         """
+        :param device: Device to which to map tensors (GPU or CPU).
         :param w2v_weights: Matrix of w2v w2v_weights, ith row contains the embedding for the word mapped to the ith index, the
         last row should correspond to the padding token, <padding>.
         :param decoder_embedding_size Size of the learned embeddings of the tags.
@@ -23,6 +24,7 @@ class EncoderDecoderRNN(nn.Module):
         """
         super(EncoderDecoderRNN, self).__init__()
 
+        self.device = device
         self.hidden_dim = hidden_dim
         self.tagset_size = tagset_size
         self.embedding_dim = w2v_weights.shape[1]
@@ -55,11 +57,9 @@ class EncoderDecoderRNN(nn.Module):
         :return: Initialized hidden state of the gru encoder.
         """
         if self.bidirectional:
-            state = torch.zeros(self.gru_encoder.num_layers * 2, batch_size, self.hidden_dim // 2)
+            state = torch.zeros(self.gru_encoder.num_layers * 2, batch_size, self.hidden_dim // 2).to(self.device)
         else:
-            state = torch.zeros(self.gru_encoder.num_layers, batch_size, self.hidden_dim)
-        if next(self.parameters()).is_cuda:
-            state = state.cuda()
+            state = torch.zeros(self.gru_encoder.num_layers, batch_size, self.hidden_dim).to(self.device)
         return state
 
     def decoder_forward(self, starting_input, hidden):
@@ -85,7 +85,7 @@ class EncoderDecoderRNN(nn.Module):
         hidden_encoder = self.init_hidden_encoder(len(batch))
 
         # pack data into a batch
-        data, labels, _ = data_manager.batch_sequence(batch)
+        data, labels, _ = data_manager.batch_sequence(batch, self.device)
         data = self.embedding_encoder(data)
         data = self.drop(data)
 
@@ -95,8 +95,7 @@ class EncoderDecoderRNN(nn.Module):
         # set first token passed to decoder as tagset_size, mapped to the last row of the embedding
         decoder_input = torch.zeros(len(batch), 1).long()
         torch.add(decoder_input, self.tagset_size, decoder_input)  # special start character
-        if hidden_encoder.is_cuda:
-            decoder_input = decoder_input.cuda()
+        decoder_input = decoder_input.to(self.device)
 
         # encoder will pass its hidden state to the decoder
         if self.bidirectional:  # needs to be reshaped since a bidirectional layer will return (2, batch, hidden dim//2)
@@ -110,7 +109,7 @@ class EncoderDecoderRNN(nn.Module):
             decoder_output, hidden_decoder = self.decoder_forward(decoder_input, hidden_decoder)
 
             _, topi = decoder_output.topk(1)  # extract predicted label
-            decoder_input = topi.squeeze(1).detach().cuda()  # detach from history as input
+            decoder_input = topi.squeeze(1).detach().to(self.device)  # detach from history as input
             results.append(decoder_output)
 
         results = torch.cat(results, dim=1)

@@ -4,10 +4,11 @@ import torch.nn as nn
 import data_manager
 
 
-class INIT(nn.Module):
-    def __init__(self, w2v_weights, hidden_dim, tagset_size, pad_sentence_length, drop_rate, bidirectional=False,
+class FCINIT(nn.Module):
+    def __init__(self, device, w2v_weights, hidden_dim, tagset_size, pad_sentence_length, drop_rate, bidirectional=False,
                  freeze=True, embedding_norm=10):
         """
+        :param device: Device to which to map tensors (GPU or CPU).
         :param w2v_weights: Matrix of w2v w2v_weights, ith row contains the embedding for the word mapped to the ith index, the
         last row should correspond to the padding token, <padding>.
         :param hidden_dim The hidden memory of the recurrent layer will have a size of 3 times this.
@@ -17,8 +18,9 @@ class INIT(nn.Module):
         :param freeze: If the embedding parameters should be frozen or trained during training.
         :param embedding_norm: Max norm of the embeddings.
         """
-        super(INIT, self).__init__()
+        super(FCINIT, self).__init__()
 
+        self.device = device
         self.hidden_dim = hidden_dim
         self.tagset_size = tagset_size
         self.embedding_dim = w2v_weights.shape[1]
@@ -62,20 +64,16 @@ class INIT(nn.Module):
         :return: Initialized hidden state of the recurrent encoder.
         """
         if self.bidirectional:
-            state = torch.zeros(self.recurrent.num_layers * 2, batch_size, self.hidden_dim // 2)
+            state = torch.zeros(self.recurrent.num_layers * 2, batch_size, self.hidden_dim // 2).to(self.device)
         else:
-            state = torch.zeros(self.recurrent.num_layers, batch_size, self.hidden_dim)
-        if next(self.parameters()).is_cuda:
-            state = state.cuda()
+            state = torch.zeros(self.recurrent.num_layers, batch_size, self.hidden_dim).to(self.device)
         return state
 
     def prepare_batch(self, batch):
         seq_list = []
         for sample in batch:
             seq = sample["sequence_extra"].unsqueeze(1)
-            if next(self.parameters()).is_cuda:
-                seq = seq.cuda()
-            seq_list.append(seq)
+            seq_list.append(seq.to(self.device))
         res_seq = torch.cat(seq_list, dim=0)
         return res_seq
 
@@ -88,7 +86,7 @@ class INIT(nn.Module):
             hidden = hidden.view(2, hidden.size()[1], -1)
 
         # output scores for each input embedding, use the pre-elaborated hidden state
-        data, labels, char_data = data_manager.batch_sequence(batch)
+        data, labels, char_data = data_manager.batch_sequence(batch, self.device)
         data = self.embedding(data)
         data = self.drop(data)
         rec_out, hidden = self.recurrent(data, hidden)
