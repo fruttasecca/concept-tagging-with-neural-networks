@@ -5,7 +5,8 @@ from torch.autograd import Variable
 import data_manager
 
 
-# recurrent-crf implementation, heavily inspired by the pytorch tutorial and by kaniblu@github
+# recurrent-crf implementation, heavily inspired by the pytorch tutorial and by kaniblu, the CRF class is almost
+# untouched, while the lstm-crf class has substantial changes, among which is the convolution on char embeddings.
 
 def sequence_mask(lengths, max_len, device):
     batch_size = lengths.size(0)

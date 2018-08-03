@@ -81,6 +81,13 @@ class CONV(nn.Module):
         return res_seq
 
     def forward(self, batch):
+        """
+        Forward pass given data.
+        :param batch: List of samples containing data as transformed by the init transformer of this class.
+        :return: A (batch of) vectors of length equal to tagset, scoring each possible class for each word in a sentence,
+        for all sentences; a tensor containing the true label for each word and a tensor containing the lengths
+        of the sequences in descending order.
+        """
         sentence_as_matrix = self.prepare_batch(batch)
 
         embedded = self.embedding(sentence_as_matrix)

@@ -63,6 +63,13 @@ class LSTM2CH(nn.Module):
         return state
 
     def forward(self, batch):
+        """
+        Forward pass given data.
+        :param batch: List of samples containing data as transformed by the init transformer of this class.
+        :return: A (batch of) vectors of length equal to tagset, scoring each possible class for each word in a sentence,
+        for all sentences; a tensor containing the true label for each word and a tensor containing the lengths
+        of the sequences in descending order.
+        """
         hidden_static = self.init_hidden(len(batch))
         hidden_dyn = self.init_hidden(len(batch))
 
