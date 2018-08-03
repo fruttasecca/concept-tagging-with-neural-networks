@@ -22,10 +22,4 @@ what arguments you are currently not providing, and what you should/could provid
   - CRFs, requirements: pycrfsuite
   - neural models, requirements: pytorch
 
-# !! The repository is currently being refactored, in a few days everything should be in order.
-WFSTs, SVMs, and CRFs have been refactored and are safe to use, more refactoring will be made to make the scripts more user friendly.
-Neural networks models, in the models directory, are generally safe to use, as to the current refactoring, 
-rnn, lstm, gru, lstm2ch and the character representation variations should be working with the current pipeline.
-The rest of the models are safe to copy paste and use for your own projects, but would not work with the current
-pipeline, this will be fixed in a day or two.
-A more complete readme, comprehensive of a picture that describes the repository structure, is in the works.
+![Alt text](/struct.png?raw=true "structure of the repository")
