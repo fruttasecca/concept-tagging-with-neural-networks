@@ -118,7 +118,7 @@ def evaluate_model(dev_data, model, class_vocab, batch_size):
     # evaluate by calling the evaluation script then clean up
     print("Dev stats:")
     write_predictions(y_true, y_true, y_predicted, "../output/dev_pred.txt", True, class_vocab)
-    os.system("../output/%s/conlleval.pl < ../output/dev_pred.txt | head -n2" % params["dataset"])
+    os.system("../output/conlleval.pl < ../output/dev_pred.txt | head -n2")
     os.system("rm ../output/dev_pred.txt")
 
 
@@ -155,7 +155,7 @@ def train_model(train_data, model, class_vocab, dev_data=None, batch_size=80, lr
 
         # train
         model.zero_grad()
-        for batch in dataloader::worker_init()
+        for batch in dataloader:
 
             # predict and check error
             if isinstance(model, lstmcrf.LstmCrf):
@@ -194,11 +194,10 @@ def train_model(train_data, model, class_vocab, dev_data=None, batch_size=80, lr
         if not isinstance(model, lstmcrf.LstmCrf):
             print("Train stats:")
             # evaluate by calling the evaluation script then clean up
-            write_predictions(y_true, y_true, y_predicted, "../output/%s/train_pred.txt" % params["dataset"], True,
+            write_predictions(y_true, y_true, y_predicted, "../output/train_pred.txt", True,
                               class_vocab)
-            os.system("../output/%s/conlleval.pl < ../output/%s/train_pred.txt | head -n2" % (
-                params["dataset"], params["dataset"]))
-            os.system("rm ../output/%s/train_pred.txt" % params["dataset"])
+            os.system("../output/conlleval.pl < ../output/train_pred.txt | head -n2")
+            os.system("rm ../output/train_pred.txt")
 
         # if we passed dev train_data to it evaluate on it and report, else keep training
         if dev_data is not None:
