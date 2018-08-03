@@ -56,3 +56,8 @@ A dataframe must contain columns "tokens" and "concepts", the entries of each sa
 are list of strings, meaning that, given sentence zero being "hi there", the first row
 of the dataframe will have the "tokens" entry equal as ["hi", "there"] and the "concepts" entry
 equal to ["0", "0"] (or whatever concepts they are mapped to).
+
+
+Some stuff needs cleaning up, like moving SVM data from src/dataset/svm to data/dataset/svm,
+this and a couple of utility scripts, like a script to go from 1 word per line .txt files to
+pickles, will be committed in short time.
