@@ -5,13 +5,25 @@ from torch.autograd import Variable
 import data_manager
 
 
-# recurrent-crf implementation, heavily inspired by the pytorch tutorial and by kaniblu@github
+# recurrent-crf implementation, heavily inspired by the pytorch tutorial and by kaniblu, the CRF class is almost
+# untouched, while the lstm-crf class has substantial changes, among which is the convolution on char embeddings.
+
+def sequence_mask(lengths, max_len, device):
+    batch_size = lengths.size(0)
+
+    ranges = torch.arange(0, max_len).long().to(device)
+    ranges = ranges.expand(batch_size, -1)
+    lens_exp = lengths.unsqueeze(1).expand_as(ranges)
+    # set 1 where [batch][i] with i < length of phrase
+    mask = ranges < lens_exp
+    return mask
 
 
 class CRF(nn.Module):
-    def __init__(self, vocab_size):
+    def __init__(self, device, vocab_size):
         super(CRF, self).__init__()
 
+        self.device = device
         self.vocab_size = vocab_size
         self.n_labels = n_labels = vocab_size + 2
         self.tagset_size = self.n_labels
@@ -128,7 +140,7 @@ class CRF(nn.Module):
         labels_ext[:, 0] = self.start_idx
         labels_ext[:, 1:-1] = labels
 
-        mask = sequence_mask(lengths + 1, max_len=seq_len + 2).long()
+        mask = sequence_mask(lengths + 1, seq_len + 2, self.device).long()
         pad_stop = Variable(labels.data.new(1).fill_(self.stop_idx))
         pad_stop = pad_stop.unsqueeze(-1).expand(batch_size, seq_len + 2)
         labels_ext = (1 - mask) * pad_stop + mask * labels_ext
@@ -149,7 +161,7 @@ class CRF(nn.Module):
         trn_scr = torch.gather(trn_row, 2, lbl_lexp)
         trn_scr = trn_scr.squeeze(-1)
 
-        mask = sequence_mask(lengths + 1, lengths.max() + 1).float()
+        mask = sequence_mask(lengths + 1, lengths.max() + 1, self.device).float()
         trn_scr = trn_scr * mask
         score = trn_scr.sum(1).squeeze(-1)
 
@@ -157,15 +169,18 @@ class CRF(nn.Module):
 
 
 class LstmCrf(nn.Module):
-    def __init__(self, w2v_weights, tag_to_itx, hidden_dim, drop_rate, bidirectional=False, freeze=True,
-                 embedding_norm=6):
+    def __init__(self, device, w2v_weights, tag_to_itx, hidden_dim, drop_rate, bidirectional=False, freeze=True,
+                 embedding_norm=6, c2v_weights=None, pad_word_length=16):
 
         super(LstmCrf, self).__init__()
 
+        self.device = device
         self.hidden_dim = hidden_dim
         self.tagset_size = len(tag_to_itx)
         self.embedding_dim = w2v_weights.shape[1]
         self.w2v_weights = w2v_weights
+        self.c2v_weights = c2v_weights
+        self.pad_word_length = pad_word_length
         self.bidirectional = bidirectional
 
         self.drop_rate = drop_rate
@@ -184,10 +199,59 @@ class LstmCrf(nn.Module):
         self.bnorm2 = nn.BatchNorm2d(1)
 
         # crf for scoring at a global level
-        self.crf = CRF(self.tagset_size)
+        self.crf = CRF(self.device, self.tagset_size)
 
-    @staticmethod
-    def features_score(feats, labels, lengths):
+        # setup convolution on characters if c2v_weights are passed
+        if self.c2v_weights is not None:
+            self.char_embedding_dim = c2v_weights.shape[1]
+            self.char_embedding = nn.Embedding.from_pretrained(torch.FloatTensor(c2v_weights), freeze=True)
+            self.char_embedding.max_norm = embedding_norm
+            self.feats = 20  # for the output channels of the conv layers
+
+            self.recurrent = nn.LSTM(self.embedding_dim + 50,
+                                     self.hidden_dim // (1 if not self.bidirectional else 2),
+                                     batch_first=True, bidirectional=self.bidirectional)
+
+            # conv layers for single character, pairs of characters, 3x characters
+            self.ngram1 = nn.Sequential(
+                nn.Conv2d(1, self.feats * 1, kernel_size=(1, self.char_embedding_dim),
+                          stride=(1, self.char_embedding_dim),
+                          padding=0),
+                nn.Dropout2d(p=self.drop_rate),
+                nn.MaxPool2d(kernel_size=(self.pad_word_length, 1)),
+                nn.Tanh(),
+            )
+
+            self.ngram2 = nn.Sequential(
+                nn.Conv2d(1, self.feats * 2, kernel_size=(2, self.char_embedding_dim),
+                          stride=(1, self.char_embedding_dim),
+                          padding=0),
+                nn.Dropout2d(p=self.drop_rate),
+                nn.MaxPool2d(kernel_size=(self.pad_word_length - 1, 1)),
+                nn.Tanh(),
+            )
+
+            self.ngram3 = nn.Sequential(
+                nn.Conv2d(1, self.feats * 3, kernel_size=(3, self.char_embedding_dim),
+                          stride=(1, self.char_embedding_dim),
+                          padding=0),
+                nn.Dropout2d(p=self.drop_rate),
+                nn.MaxPool2d(kernel_size=(self.pad_word_length - 2, 1)),
+                nn.Tanh(),
+            )
+
+            # seq layers to elaborate on the output of conv layers
+            self.fc1 = nn.Sequential(
+                nn.Linear(self.feats, 10),
+            )
+            self.fc2 = nn.Sequential(
+                nn.Linear(self.feats * 2, 20),
+            )
+            self.fc3 = nn.Sequential(
+                nn.Linear(self.feats * 3, 20),
+            )
+
+    def features_score(self, feats, labels, lengths):
         """
         Given the label scores (feats) of each token and the correct labels,
         return the score of the whole sentence.
@@ -203,7 +267,7 @@ class LstmCrf(nn.Module):
         # get the score that was given to each correct label
         scores = torch.gather(feats, 2, labels_exp).squeeze(-1)
         # mask out scores of padding
-        mask = sequence_mask(lengths, max_length).float()
+        mask = sequence_mask(lengths, max_length, self.device).float()
         scores = scores * mask
 
         # sum and return
@@ -231,17 +295,14 @@ class LstmCrf(nn.Module):
         :return: Initialized hidden state of the recurrent layer.
         """
         if self.bidirectional:
-            state = [torch.zeros(self.recurrent.num_layers * 2, batch_size, self.hidden_dim // 2),
-                     torch.zeros(self.recurrent.num_layers * 2, batch_size, self.hidden_dim // 2)]
+            state = [torch.zeros(self.recurrent.num_layers * 2, batch_size, self.hidden_dim // 2).to(self.device),
+                     torch.zeros(self.recurrent.num_layers * 2, batch_size, self.hidden_dim // 2).to(self.device)]
         else:
-            state = [torch.zeros(self.recurrent.num_layers, batch_size, self.hidden_dim),
-                     torch.zeros(self.recurrent.num_layers, batch_size, self.hidden_dim)]
-        if next(self.parameters()).is_cuda:
-            state[0] = state[0].cuda()
-            state[1] = state[1].cuda()
+            state = [torch.zeros(self.recurrent.num_layers, batch_size, self.hidden_dim).to(self.device),
+                     torch.zeros(self.recurrent.num_layers, batch_size, self.hidden_dim).to(self.device)]
         return state
 
-    def get_features_from_recurrent(self, data, lengths):
+    def get_features_from_recurrent(self, data, char_data, lengths):
         """
         For each word get its scores for each possible label.
         :param data: Input sentences.
@@ -255,6 +316,24 @@ class LstmCrf(nn.Module):
         embedded = self.embeddings(data)
         embedded = embedded.view(batch_size, seq_len, self.embedding_dim)
         embedded = self.drop(embedded)
+
+        if self.c2v_weights is not None:
+            batched_conv = []
+            char_data = self.char_embedding(char_data)
+            char_data = self.drop(char_data)
+            num_words = char_data.size()[2]
+            for i in range(num_words):
+                # get word for each batch, then convolute on the ith word of each batch and concatenate
+                c = char_data[:, 0, i, :, :].unsqueeze(1)
+                ngram1 = self.ngram1(c).view(char_data.size()[0], 1, 1, -1)
+                ngram2 = self.ngram2(c).view(char_data.size()[0], 1, 1, -1)
+                ngram3 = self.ngram3(c).view(char_data.size()[0], 1, 1, -1)
+                ngram1 = self.fc1(ngram1)
+                ngram2 = self.fc2(ngram2)
+                ngram3 = self.fc3(ngram3)
+                batched_conv.append(torch.cat([ngram1, ngram2, ngram3], dim=3))
+            batched_conv = torch.cat(batched_conv, dim=1).squeeze(2)
+            embedded = torch.cat([embedded, batched_conv], dim=2)
 
         # pack, pass through recurrent, unpack
         packed = nn.utils.rnn.pack_padded_sequence(embedded, sorted(lengths.data.tolist(), reverse=True),
@@ -285,19 +364,17 @@ class LstmCrf(nn.Module):
         return score
 
     def forward(self, batch):
-        data, labels, _ = data_manager.batch_sequence(batch)
+        data, labels, char_data = data_manager.batch_sequence(batch, self.device)
         lengths = self.get_lengths(labels)
 
         # get features and do predictions maximizing the sentence score using the crf
-        feats = self.get_features_from_recurrent(data, lengths)
+        feats = self.get_features_from_recurrent(data, char_data, lengths)
         scores, predictions = self.crf.viterbi_decode(feats, lengths)
 
         # pad predictions so that they match in length with padded labels
         batch_size, pad_to = labels.size()
         _, pad_from = predictions.size()
-        padding = torch.zeros(batch_size, pad_to - pad_from).long()
-        if next(self.parameters()).is_cuda:
-            padding = padding.cuda()
+        padding = torch.zeros(batch_size, pad_to - pad_from).long().to(self.device)
         predictions = torch.cat([predictions, padding], dim=1)
         predictions = predictions.expand(*labels.size())
 
@@ -316,9 +393,7 @@ class LstmCrf(nn.Module):
         TODO: remove for cycle, make it with matrix operations
         """
         batchs, _ = labels.size()
-        lengths = torch.zeros(batchs).long()
-        if next(self.parameters()).is_cuda:
-            lengths = lengths.cuda()
+        lengths = torch.zeros(batchs).long().to(self.device)
         for i in range(batchs):
             while len(labels[i]) > lengths[i] and labels[i][lengths[i]] != padding:
                 lengths[i] += 1
@@ -331,12 +406,12 @@ class LstmCrf(nn.Module):
         :param batch:
         :return:Pytorch loss.
         """
-        data, labels, _ = data_manager.batch_sequence(batch)
+        data, labels, char_data = data_manager.batch_sequence(batch, self.device)
         lengths = self.get_lengths(labels)
         labels = self.get_labels(labels)
 
         # get feats (scores for each label, for each word) from recurrent
-        feats = self.get_features_from_recurrent(data, lengths)
+        feats = self.get_features_from_recurrent(data, char_data, lengths)
         # get score of sentence from crf
         norm_score = self.crf(feats, lengths)
 
@@ -347,15 +422,3 @@ class LstmCrf(nn.Module):
         loglik = -loglik.mean()
         return loglik
 
-
-def sequence_mask(lengths, max_len):
-    batch_size = lengths.size(0)
-
-    ranges = torch.arange(0, max_len).long()
-    if lengths.is_cuda:
-        ranges = ranges.cuda()
-    ranges = ranges.expand(batch_size, -1)
-    lens_exp = lengths.unsqueeze(1).expand_as(ranges)
-    # set 1 where [batch][i] with i < length of phrase
-    mask = ranges < lens_exp
-    return mask

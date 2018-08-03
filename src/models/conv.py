@@ -4,10 +4,11 @@ import torch.nn as nn
 import data_manager
 
 
-class CNN(nn.Module):
-    def __init__(self, w2v_weights, hidden_dim, tagset_size, pad_sentence_length, drop_rate=0.5, bidirectional=False,
+class CONV(nn.Module):
+    def __init__(self, device, w2v_weights, hidden_dim, tagset_size, pad_sentence_length, drop_rate=0.5, bidirectional=False,
                  freeze=True, embedding_norm=10):
         """
+        :param device: Device to which to map tensors (GPU or CPU).
         :param w2v_weights: Matrix of w2v w2v_weights, ith row contains the embedding for the word mapped to the ith index, the
         last row should correspond to the padding token, <padding>.
         :param hidden_dim The hidden memory of the recurrent layer will have a size of 3 times this.
@@ -18,8 +19,9 @@ class CNN(nn.Module):
         :param freeze: If the embedding parameters should be frozen or trained during training.
         :param embedding_norm: Max norm of the embeddings.
         """
-        super(CNN, self).__init__()
+        super(CONV, self).__init__()
 
+        self.device = device
         self.tagset_size = tagset_size
         self.embedding_dim = w2v_weights.shape[1]
         self.pad_sentence_length = pad_sentence_length
@@ -74,16 +76,21 @@ class CNN(nn.Module):
         seq_list = []
         for sample in batch:
             seq = sample["sequence_extra"].unsqueeze(1)
-            if next(self.parameters()).is_cuda:
-                seq = seq.cuda()
-            seq_list.append(seq)
+            seq_list.append(seq.to(self.device))
         res_seq = torch.cat(seq_list, dim=0)
         return res_seq
 
     def forward(self, batch):
-        sequence = self.prepare_batch(batch)
+        """
+        Forward pass given data.
+        :param batch: List of samples containing data as transformed by the init transformer of this class.
+        :return: A (batch of) vectors of length equal to tagset, scoring each possible class for each word in a sentence,
+        for all sentences; a tensor containing the true label for each word and a tensor containing the lengths
+        of the sequences in descending order.
+        """
+        sentence_as_matrix = self.prepare_batch(batch)
 
-        embedded = self.embedding(sequence)
+        embedded = self.embedding(sentence_as_matrix)
         embedded = self.drop(embedded)
 
         # convolution on data
@@ -100,7 +107,7 @@ class CNN(nn.Module):
         if self.bidirectional:
             hidden = hidden.view(2, hidden.size()[1], -1)
 
-        data, labels, _ = data_manager.batch_sequence(batch)
+        data, labels, _ = data_manager.batch_sequence(batch, self.device)
         data = self.embedding(data)
         data = self.drop(data)
         lstm_out, hidden = self.lstm(data, hidden)

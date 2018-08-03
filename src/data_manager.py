@@ -1,7 +1,6 @@
 import random
 import pandas as pd
 import numpy as np
-import collections  # to make the class w2v_vocab read only
 import torch
 from torch.utils.data import Dataset
 
@@ -9,39 +8,23 @@ from torch.utils.data import Dataset
 class PytorchDataset(Dataset):
     """Dataset to import augmented data."""
 
-    def __init__(self, pickle, init_transform, getitem_transform=None):
+    def __init__(self, df, init_transform, getitem_transform=None):
         """
-        :param pickle Path to a pickle or a list of paths to pickles containing a dataframe with tokens and
-        concepts columns containing the data.
+        :param df Dataframe containing data, must have "concepts" and "tokens" columns, every entry of such a column
+        is a list of strings, entries for the same sample must have the same length, given that they are representing
+        the same sentence, either using tokens or concepts.
         :param init_transform: Transform function to be used on data points at import time.
         :param getitem_transform: Transform function to be used on data points when they are retrieved with __getitem__.
         """
-        print("loading data:\n %s" % pickle)
-        if type(pickle) == type([]):
-            df_list = []
-            for name in pickle:
-                df_list.append(pd.read_pickle(name))
-            df = pd.concat(df_list)
-        else:
-            df = pd.read_pickle(pickle)
 
         self.init_transform = init_transform
         self.getitem_transform = getitem_transform
-
-        self.class_vocab = dict()
-        for _, data_point in df.iterrows():
-            for concept in data_point["concepts"]:
-                if concept not in self.class_vocab:
-                    self.class_vocab[concept] = len(self.class_vocab)
 
         # transform and save data
         self.data = dict()
         for i in range(len(df)):
             sample = df.iloc[i, :]
             self.data[i] = self.init_transform(sample)
-
-        # empty dataframe
-        df = df.iloc[0:0]
 
     def __len__(self):
         return len(self.data)
@@ -225,95 +208,6 @@ class Data(object):
         return df
 
 
-# simple class to make our class vocabulary read only
-class DictWrapper(collections.Mapping):
-    def __init__(self, data):
-        self._data = data
-
-    def __getitem__(self, key):
-        return self._data[key]
-
-    def __len__(self):
-        return len(self._data)
-
-    def __iter__(self):
-        return iter(self._data)
-
-
-__class_vocab_movies = {'I-movie.name': 2, 'I-character.name': 17, 'I-movie.location': 36, 'B-movie.location': 30,
-                        'B-movie.name': 1,
-                        'B-director.name': 15, 'B-person.name': 6, 'I-actor.name': 20, 'B-movie.star_rating': 37,
-                        'B-actor.name': 19,
-                        'B-award.ceremony': 27, 'I-rating.name': 28, 'B-director.nationality': 31,
-                        'B-movie.release_region': 35,
-                        'B-actor.nationality': 29, 'I-producer.name': 23, 'B-character.name': 9, 'B-producer.name': 11,
-                        'B-movie.genre': 14, 'I-movie.release_date': 13, 'I-movie.language': 21, 'B-actor.type': 18,
-                        'B-movie.description': 26, 'I-person.name': 7, 'I-movie.genre': 34, 'B-award.category': 33,
-                        'B-movie.language': 10,
-                        'O': 0, 'B-country.name': 3, 'B-rating.name': 8, 'I-award.ceremony': 32, 'B-movie.subject': 4,
-                        'B-movie.release_date': 12, 'B-movie.gross_revenue': 24, 'I-movie.release_region': 38,
-                        'I-actor.nationality': 40,
-                        'I-movie.gross_revenue': 25, 'I-country.name': 22, 'B-person.nationality': 39,
-                        'I-director.name': 16,
-                        'I-award.category': 42, 'I-movie.subject': 5, 'B-movie.type': 41}
-
-class_vocab_movies = DictWrapper(__class_vocab_movies)
-
-__class_vocab_atis = {'I-airline_name': 18, 'B-stoploc.airport_code': 123, 'B-state_code': 88, 'B-meal_description': 76,
-                      'B-fromloc.city_name': 3, 'B-day_number': 118, 'B-depart_date.month_name': 25,
-                      'I-return_date.date_relative': 116,
-                      'B-meal': 66, 'I-arrive_date.day_number': 34, 'B-depart_date.year': 62,
-                      'B-fromloc.state_name': 41, 'B-mod': 77,
-                      'B-depart_date.today_relative': 46, 'B-arrive_time.time_relative': 22,
-                      'B-return_date.today_relative': 112,
-                      'I-fromloc.city_name': 4, 'B-flight_mod': 47, 'B-day_name': 100, 'B-flight': 126,
-                      'B-arrive_time.end_time': 55,
-                      'I-flight_time': 84, 'B-flight_number': 2, 'I-fare_basis_code': 98,
-                      'B-depart_time.start_time': 81,
-                      'I-state_name': 124, 'B-arrive_date.day_name': 10, 'B-aircraft_code': 72, 'I-transport_type': 74,
-                      'I-cost_relative': 15, 'B-arrive_time.start_time': 53, 'B-arrive_time.period_of_day': 50,
-                      'I-time': 120, 'B-depart_date.date_relative': 51, 'B-flight_days': 59,
-                      'I-return_date.day_number': 95,
-                      'B-return_date.month_name': 93, 'B-return_date.day_name': 97, 'B-flight_stop': 21,
-                      'I-toloc.city_name': 6,
-                      'B-depart_time.time': 38, 'B-toloc.airport_name': 68, 'I-airport_name': 64, 'B-or': 44,
-                      'B-arrive_time.period_mod': 9,
-                      'I-arrive_time.time_relative': 89, 'B-airline_name': 1, 'B-depart_time.period_of_day': 11,
-                      'B-economy': 60,
-                      'B-compartment': 122, 'B-fromloc.airport_name': 12, 'I-fare_amount': 36, 'B-state_name': 105,
-                      'B-stoploc.state_code': 20, 'B-class_type': 24, 'B-round_trip': 16, 'I-round_trip': 17,
-                      'B-depart_time.period_mod': 40,
-                      'I-depart_date.today_relative': 102, 'I-flight_stop': 75, 'I-return_date.today_relative': 113,
-                      'I-class_type': 45, 'B-time': 110, 'B-stoploc.city_name': 19, 'B-fromloc.airport_code': 52,
-                      'I-arrive_time.period_of_day': 108, 'I-depart_time.start_time': 86, 'B-restriction_code': 14,
-                      'B-toloc.state_code': 29, 'B-fare_basis_code': 58, 'B-airport_code': 78,
-                      'B-fromloc.state_code': 57,
-                      'I-city_name': 31, 'B-fare_amount': 35, 'B-today_relative': 106, 'B-meal_code': 103,
-                      'I-fromloc.airport_name': 13,
-                      'B-days_code': 109, 'I-arrive_time.time': 28, 'I-flight_mod': 67, 'I-flight_number': 121,
-                      'B-airport_name': 63, 'B-depart_date.day_number': 26, 'I-toloc.state_name': 80,
-                      'B-transport_type': 73,
-                      'B-arrive_date.today_relative': 85, 'I-stoploc.city_name': 65, 'I-meal_description': 114,
-                      'B-arrive_time.time': 23,
-                      'I-toloc.airport_name': 69, 'B-return_date.day_number': 94, 'B-return_time.period_of_day': 92,
-                      'B-period_of_day': 101,
-                      'B-cost_relative': 8, 'I-depart_time.time': 39, 'I-economy': 71, 'I-meal_code': 104,
-                      'B-depart_date.day_name': 7,
-                      'B-stoploc.airport_name': 111, 'I-today_relative': 107, 'I-depart_time.period_of_day': 99,
-                      'B-toloc.city_name': 5, 'B-depart_time.end_time': 82, 'O': 0, 'B-arrive_date.month_name': 32,
-                      'B-city_name': 27, 'B-time_relative': 119, 'B-arrive_date.date_relative': 90,
-                      'I-arrive_time.end_time': 56,
-                      'I-restriction_code': 70, 'B-depart_time.time_relative': 37, 'B-connect': 49,
-                      'B-return_time.period_mod': 91,
-                      'B-toloc.country_name': 96, 'B-booking_class': 125, 'B-month_name': 117, 'B-flight_time': 48,
-                      'B-return_date.date_relative': 79, 'B-toloc.state_name': 43, 'I-depart_time.time_relative': 115,
-                      'I-depart_date.day_number': 61, 'B-airline_code': 30, 'B-arrive_date.day_number': 33,
-                      'I-fromloc.state_name': 42, 'I-arrive_time.start_time': 54, 'B-toloc.airport_code': 83,
-                      'I-depart_time.end_time': 87}
-
-class_vocab_atis = DictWrapper(__class_vocab_atis)
-
-
 def batch_sequence(batch, device):
     """
     Given a batch return sequence data, labels and chars data (if present) in a "batched" way, as a tensor
@@ -375,17 +269,25 @@ class DropTransform(object):
 
 
 class InitTransform(object):
-    """ Transformer class to be passed to the pytorch dataset class to transform data at import time. """
+    """ Transformer class to be passed to the PytorchDataset class to transform data at import time, given a sample,
+    returns a transformed sample, which is a dict mapping keys to tensors of either w2v indexes, c2v indexes, concept
+    indexes, see this class __call__ method for more info.
+    """
 
-    def __init__(self, device, w2v_vocab, class_vocab, c2v_vocab=None, sentence_length_cap=50, word_length_cap=30, add_matrix=True):
+    def __init__(self, w2v_vocab, class_vocab, c2v_vocab=None, sentence_length_cap=50, word_length_cap=30,
+                 add_matrix=True):
         """
         :param w2v_vocab: Dict mapping strings to their w2v index (of the w2v_weights matrix passed to the constructor
         of the neural network class).
-        :param class_vocab: Dictionary that maps classes from column "concepts" to an integer.
+        :param class_vocab: Dictionary that maps classes from column "concepts" to an integer, their index.
         :param c2v_vocab: Dict mapping chars to their c2v index (of the c2v_weights matrix passed to the constructor
         of the neural network class).
+        :param sentence_length_cap: Sentences shorter than this cap will be padded, if longer will be cut.
+        :param word_length_cap: Words shorter than this cap will be padded, if longer will be cut, only used if
+        c2v embeddings are being used.
+        :param add_matrix: If True, the transformed sample will also have a key "sequence_extra" which maps
+        to the sentence seen as a matrix of shape (padded number of words, embedding size).
         """
-        self.device = device
         self.w2v_vocab = w2v_vocab
         self.c2v_vocab = c2v_vocab
         self.class_vocab = class_vocab
@@ -456,8 +358,6 @@ class InitTransform(object):
             elif word.title() in vocab:
                 vectors.append(vocab[word.title()])
             elif word.isdigit() or word.find("DIGIT") != -1:  # or any(char.isdigit() for char in word):
-                vectors.append(self.w2v_vocab["number"])
-            elif word == "@card@":
                 vectors.append(self.w2v_vocab["number"])
             else:
                 vectors.append(vocab["<UNK>"])
