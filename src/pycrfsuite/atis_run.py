@@ -13,9 +13,6 @@ can be later used with pycrsfuite.
 sys.path.append("..")  # to make data_manager visible from here
 from data_manager import w2v_matrix_vocab_generator
 
-w2v_vocab, w2v_weights = w2v_matrix_vocab_generator("../../data/atis/w2v_trimmed.pickle")
-c2v_vocab, c2v_weights = w2v_matrix_vocab_generator("../../data/atis/c2v_20.pickle")
-
 
 def get_data(file):
     """
@@ -264,12 +261,18 @@ def sent2tokens(sent):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3 and len(sys.argv) != 4:
-        print(
-            "usage is:\n ./movies_run.py train_file test_file, or ./movies_run.py train_file test_file "
-            "--use_embeddings to use w2v embeddings and char embeddings")
+    if len(sys.argv) != 3 and len(sys.argv) != 5:
+        print("usage is:\n ./atis_run.py train_file test_file, or ./movies_run.py train_file test_file w2v_pickle "
+              "c2v_pickle w2v embeddings and char embeddings")
+        print("Train and test files are in 1 word per line format, w2v and c2v are pickles mapping a word or a "
+              "character to an index")
+        exit()
     train, test = sys.argv[1], sys.argv[2]
-    use_embeddings = len(sys.argv) == 4 and sys.argv[3] == "--w2v"
+    use_embeddings = len(sys.argv) == 5
+    if use_embeddings:
+        w2v_vocab, w2v_weights = w2v_matrix_vocab_generator(sys.argv[3])
+        c2v_vocab, c2v_weights = w2v_matrix_vocab_generator(sys.argv[4])
+
     train = get_data(train)
     test = get_data(test)
 
