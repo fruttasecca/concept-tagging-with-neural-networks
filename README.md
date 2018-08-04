@@ -41,6 +41,7 @@ data is stored, more specifically, for each dataset:
   - at the first level we have the original data, pickles used by nn, w2v and c2v embeddings
   - a crf directory containing data in a format to be used by the crf scripts
   - a wfst directory containing data in a format to be used by the wfst scripts
+  - a svm directory containing data in a format to be used by the svm scripts
   - data formatted in a way to be used by svms is currently in src/dataset/svm, will be moved in a following commit
   
  
@@ -50,14 +51,30 @@ The output directory contains:
   - the conlleval.pl evaluation script, used to evaluate performance of results in the two aforementioned directories
   
  
-Both the YAMCHA SVM implementation and WFSTs run using files formatted in a 1 word per line format,
-while the crf and nn scripts use pickles from pandas dataframes. 
+YAMCHA, SVM and the CRF scripts run using files formatted in a 1 word per line format,
+while the nn scripts use pickles from pandas dataframes. 
 A dataframe must contain columns "tokens" and "concepts", the entries of each sample/row
 are list of strings, meaning that, given sentence zero being "hi there", the first row
 of the dataframe will have the "tokens" entry equal as ["hi", "there"] and the "concepts" entry
 equal to ["0", "0"] (or whatever concepts they are mapped to).
 
 
-Some stuff needs cleaning up, like moving SVM data from src/dataset/svm to data/dataset/svm,
-this and a couple of utility scripts, like a script to go from 1 word per line .txt files to
-pickles, will be committed in short time.
+Examples on how to call the scripts for the different architectures:
+
+```sh
+./wfst.py ../data/atis/wfst/train.txt ../data/atis/wfst/concept_sentences.txt ../data/atis/wfst/test.txt 4 kneser_ney 
+```
+To run the WFST script, train and test are in 1 word per line format, concept_sentences have
+one sentence of concepts per line, so given a sentence "hi there" mapped to "O O ", the first
+entry of this file would just be "O O". If you have any doubts check the files in data/<dataset>/wfst.
+
+```sh
+./exec.sh ../../../data/movies/svm/exp.train.txt ../../../data/movies/svm/exp.test.txt
+```
+To run YAMCHA (SVMs) on these files, training on the first and testing on the second. To add
+your features you should add the feature as a column in those files, and edit the exec.sh
+file to make YAMCHA use those features. The way this works is because of YAMCHA; check its
+documentation if you have doubts.
+
+
+
