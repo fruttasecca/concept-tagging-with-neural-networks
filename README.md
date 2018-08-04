@@ -76,5 +76,38 @@ your features you should add the feature as a column in those files, and edit th
 file to make YAMCHA use those features. The way this works is because of YAMCHA; check its
 documentation if you have doubts.
 
+```sh
+./movies_run.py ../../data/atis/crf/train_dev.txt ../../data/atis/crf/test.txt
+./movies_run.py ../../data/movies/crf/train_dev.txt ../../data/movies/crf/test.txt ../../data/movies/w2v_trimmed.pickle ../../data/movies/c2v_20.pickle
+```
+To run the CRF script either without embeddings or with embeddings. Train and test 
+files are in a 1 word per line format, w2v and c2v pickles are pickles mapping words
+to their index. Defining more features is done programmatically in the script, by
+adding your features to a features dictionary mapping the feature name to whatever
+you want as a value; i.e. by doing "features['word[3]'] = word[:3]" you would add
+the prefix of the word as a feature for the word currently selected.
+The way this works is because of pycrfsuite, while this may seem cumbersome at first
+you should find defining features at the script level easier than rewriting train and 
+test files as for YAMCHA.
+Note that using embeddings might me very memory consuming, especially 
+for ATIS.
+
+```sh
+./run_model.py  --hidden_size=200 --epochs=5 --batch=5 --drop=0.7  --embedding_norm=6.0 --lr=0.001 --model=conv  --unfreeze --write=results.txt --train="../data/movies/train.pickle" --test="../data/movies/dev.pickle" --w2v="../data/movies/w2v_trimmed.pickle" --hidden_size=200 --bidirectional --dev
+```
+This will run the CONV model with the defined paramaters and hyperparameters.
+Train and test files are provided as pickles containing a "tokens" column and a "concepts" 
+column, where every entry is a list of strings (sentence in tokens forms or sentence in concepts forms).
+So if the first sentence is "hello there" mapped to "O O", the first entry of the
+tokens column would contain ["hello", "there"], while the first for the concepts
+column would contain ["O", "O"].
+For a more complete explanation and default values of hyperparameters simply run:
+```sh
+./run_model.py --help
+```
+
+
+
+
 
 
