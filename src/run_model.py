@@ -430,8 +430,6 @@ def generate_model_and_transformers(params, class_dict):
 if __name__ == "__main__":
     random.seed(1337)
     np.random.seed(1337)
-    torch.manual_seed(1337)
-    torch.cuda.manual_seed_all(1337)
     params = parse_args(sys.argv[1:])
 
     # load data
