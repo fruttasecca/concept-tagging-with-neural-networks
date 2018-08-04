@@ -2,9 +2,9 @@
 import math  # for math.log
 import os  # doing fst/opengrm commands
 import sys  # arguments
+import time # to timestamp working directories
 
 from data_manager import Data
-from data_manager import class_vocab_movies, class_vocab_atis
 
 """
 File to run wfsts on atis and movies;
@@ -37,7 +37,7 @@ def write_word_concept_transducer_same_prob(data):
     wt_file.close()
 
 
-def run(train_data, concepts_phrases, test_data, gram, tech, class_vocab):
+def run(train_data, concepts_phrases, test_data, gram, tech):
     """
     Trains the model given gram length and smoothing, then runs it against the test data, an output file
     will be written in the output directory of this project, the file is going to be named as
@@ -50,24 +50,24 @@ def run(train_data, concepts_phrases, test_data, gram, tech, class_vocab):
     :param test_data: Test data in (word lemma pos IOB) format for each line, with phrases separated by a newline.
     :param gram: Length of the gram used, --order=gram is going to be used in ngramcount.
     :param tech: Smoothing technique, --method=tech is going to be used in ngrammake.
-    :param class_vocab: Dict containing all the concept types, contained in the data_manager module.
     """
     # get data
     data = Data(train_data)
+    # needed for output, in case we substituted O's concepts with tokens or anything else
+    class_set = set([concept for concept in data.counter_concepts if (concept[:2] == "B-" or concept[:2] == "I-")])
+    class_set.add("O")
+
+    timestamp = time.time()
     test_file = open(test_data, 'r')
-    output_file = open("%s_%s_order=%s_tech=%s.txt" % (dataset, train_data.split("/")[-1], gram, tech), "w")
+    output_file = open("%s_order=%s_tech=%s_%f.txt" % (train_data.split("/")[-1], gram, tech, timestamp), "w")
     # if its not an absolute path make it into one since we are changing dir later
     if concepts_phrases[0] != "/":
         concepts_phrases = os.getcwd() + "/" + concepts_phrases
 
     # create dir, report problem if it exists already
-    dir_name = "tmp_%s_%s_%s" % (train_data.split("/")[-1], gram, tech)
+    dir_name = "%s_%s_%s_%f" % (train_data.split("/")[-1], gram, tech, timestamp)
     if not os.path.exists(dir_name):
         os.makedirs(dir_name)
-    else:
-        print("there is already a working directory named %s, perhaps a process with the same arguments is already "
-              "running" % dir_name)
-        exit()
     os.chdir(dir_name)
 
     ############################
@@ -93,7 +93,6 @@ def run(train_data, concepts_phrases, test_data, gram, tech, class_vocab):
     os.system(cmd)
     cmd = "ngrammake --method=%s train.concepts.cnts > concepts.fsa" % tech
     os.system(cmd)
-
 
     ###########################
     ###########################
@@ -138,8 +137,9 @@ def run(train_data, concepts_phrases, test_data, gram, tech, class_vocab):
             # write line to file (word label predicted_label)
             for word, label, predicted in zip(phrase, labels, predicted_labels):
                 # these 2 checks are needed to clean out extra classes from data elaboration
-                if predicted not in class_vocab:
+                if predicted not in class_set:
                     predicted = "O"
+
                 output_file.write("%s %s %s\n" % (word, label, predicted))
             output_file.write("\n")
 
@@ -161,33 +161,37 @@ if __name__ == "__main__":
     smoothing_tech = ["witten_bell", "absolute", "kneser_ney", "presmoothed", "unsmoothed", "katz"]
     # length of grams
     grams = ["1", "2", "3", "4", "5"]
-    # datasets
-    datasets = ["atis", "movies"]
 
-    if len(sys.argv) != 4:
-        print("usage: ./wfst.py dataset gram smoothing")
-    elif sys.argv[1] not in datasets:
-        print("dataset should be among the following")
-        print(datasets)
-    elif sys.argv[2] not in grams:
+    if len(sys.argv) != 6:
+        print("usage: ./wfst.py train.data concept-sentences test.data gram smoothing")
+        print("Train.data is a file in 1 word per line format, sentences are separated by an empty line; the first "
+              "columns is tokens, the second columns is concepts")
+        print("Concept-sentences is a file where each line contains a sentence only in the form of concepts, "
+              "so every line is basically a list of concepts, which map to a phrase; i.e. if the first phrase in the "
+              "train data would be mapped to 'O O B-movie.name' then the first sentence in concept sentences would be "
+              "'O O B-movie.name'; see the atis or movies data in the data/<dataset>/wfst directory for an example.")
+        print("Test.data is a file in 1 word per line format, sentences are separated by an empty line; the first "
+              "columns is tokens, the second columns is concepts")
+        print("While running, a temporary directory will be created, the directory and the output file are named in "
+              "the following way: trainfile_gram_smoothing_timestamp.")
+
+    elif sys.argv[4] not in grams:
         print("grams should be among the following:")
         print(grams)
-    elif sys.argv[3] not in smoothing_tech:
-        print("smoothing should be among the following:")
-        print(smoothing_tech)
     else:
-        dataset = sys.argv[1]
-        gram = sys.argv[2]
-        tech = sys.argv[3]
-        if dataset == "movies":
-            train_data = "../data/movies/wfst/train.txt"
-            concept_sentences = "../data/movies/wfst/concept_sentences.txt"
-            test_data = "../data/movies/wfst/test.txt"
-            class_vocab = class_vocab_movies
-        elif dataset == "atis":
-            train_data = "../data/atis/wfst/train.txt"
-            concept_sentences = "../data/atis/wfst/concept_sentences.txt"
-            test_data = "../data/atis/wfst/test.txt"
-            class_vocab = class_vocab_atis
+        train_data = sys.argv[1]
+        assert os.path.isfile(train_data), "train data is not there"
 
-        run(train_data, concept_sentences, test_data, gram, tech, class_vocab)
+        concept_sentences = sys.argv[2]
+        assert os.path.isfile(concept_sentences), "concept_sentences file is not there"
+
+        test_data = sys.argv[3]
+        assert os.path.isfile(test_data), "test data is not there"
+
+        gram = sys.argv[4]
+        assert gram in grams, "Grams should be among the following:\n%s" % grams
+
+        tech = sys.argv[5]
+        assert tech in smoothing_tech, "Smoothing should be among the following:\n%s" % smoothing_tech
+
+        run(train_data, concept_sentences, test_data, gram, tech)
