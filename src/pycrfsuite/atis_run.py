@@ -265,7 +265,7 @@ if __name__ == "__main__":
         print("usage is:\n ./atis_run.py train_file test_file, or ./movies_run.py train_file test_file w2v_pickle "
               "c2v_pickle w2v embeddings and char embeddings")
         print("Train and test files are in 1 word per line format, w2v and c2v are pickles mapping a word or a "
-              "character to an index")
+              "character to its google embedding vector or char embedding.")
         exit()
     train, test = sys.argv[1], sys.argv[2]
     use_embeddings = len(sys.argv) == 5
