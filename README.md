@@ -108,6 +108,17 @@ For a more complete explanation and default values of hyperparameters simply run
 
 
 
+For scripts that require w2v embeddings (and permit c2v embeddings as an extra parameter),
+you must provide those embeddings as a pickle containing a pandas dataframe
+with two columns, a "token" column and a "vector" column containing the
+embedding vector. Each entry in this dataframe is simply a token and its corresponding
+embedding vector.
+
+This allows you to not use the whole google embeddings bin file (which is quite larger), but to
+just "trim" down the embeddings to the ones you need, only keeping the embeddings of tokens that
+are present in your dataset. Pickles containing trimmed embeddings for atis
+and movies are already there, in their respective data directories.
+
 
 
 
