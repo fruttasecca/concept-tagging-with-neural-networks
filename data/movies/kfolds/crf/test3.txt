@@ -1,0 +1,2419 @@
+who who WP O
+played play VVD O
+guido guido NN B-character.name
+in in IN O
+life life NN B-movie.name
+is be VBZ I-movie.name
+beautiful beautiful JJ I-movie.name
+
+cast cast NN O
+and and CC O
+crew crew NN O
+of of IN O
+movie movie NN O
+the the DT B-movie.name
+campaign campaign NN I-movie.name
+
+who who WP O
+are be VBP O
+the the DT O
+actors actor NNS O
+in in IN O
+captain captain NN B-movie.name
+america america NN I-movie.name
+
+who who WP O
+were be VBD O
+the the DT O
+cast cast NN O
+members member NNS O
+in in IN O
+the the DT B-movie.name
+hobbist hobbist NN I-movie.name
+
+show show VV O
+me me PP O
+gilda Gilda NP B-movie.name
+'s 's POS O
+credits credit NNS O
+
+who who WP O
+was be VBD O
+the the DT O
+lead lead JJ O
+actor actor NN O
+in in IN O
+hitch hitch NN B-movie.name
+
+who who WP O
+was be VBD O
+in in IN O
+black black JJ B-movie.name
+swan swan NN I-movie.name
+
+who who WP O
+starred star VVD O
+in in IN O
+hitch hitch NN B-movie.name
+
+who who WP O
+starred star VVD O
+in in IN O
+the the DT O
+movie movie NN O
+hitch hitch NN B-movie.name
+
+actress actress NN O
+from from IN O
+gone go VVN B-movie.name
+with with IN I-movie.name
+the the DT I-movie.name
+wind wind NN I-movie.name
+
+who who WP O
+stars star VVZ O
+on on IN O
+the the DT O
+house house NN B-movie.name
+at at IN I-movie.name
+the the DT I-movie.name
+end end NN I-movie.name
+of of IN I-movie.name
+the the DT I-movie.name
+street street NN I-movie.name
+
+who who WP O
+is be VBZ O
+in in IN O
+movie movie NN O
+
+who who WP O
+was be VBD O
+the the DT O
+lead lead JJ O
+actress actress NN O
+in in IN O
+the the DT B-movie.name
+hunger hunger NN I-movie.name
+games game NNS I-movie.name
+
+what what WP O
+were be VBD O
+the the DT O
+names name NNS O
+of of IN O
+the the DT O
+ladies lady NNS O
+in in IN O
+facts fact NNS I-movie.name
+of of IN I-movie.name
+life life NN I-movie.name
+
+i i NNS O
+want want VVP O
+to to TO O
+look look VV O
+up up RP O
+the the DT O
+budget budget NN O
+of of IN O
+freedom freedom NN B-movie.name
+writers writer NNS I-movie.name
+
+how how WRB O
+much much RB O
+was be VBD O
+the the DT O
+budget budget NN O
+for for IN O
+the the DT B-movie.name
+hunger hunger NN I-movie.name
+games game NNS I-movie.name
+
+search search NN O
+for for IN O
+the the DT O
+budget budget NN O
+of of IN O
+step step NN B-movie.name
+up up RB I-movie.name
+
+what what WP O
+is be VBZ O
+the the DT O
+buget buget NN O
+of of IN O
+movie movie NN O
+heroine heroine NN B-movie.name
+
+how how WRB O
+much much RB O
+did do VVD O
+it it PP O
+cost cost VVD O
+to to TO O
+make make VV O
+jurassic Jurassic JJ B-movie.name
+park park NN I-movie.name
+
+i i NNS O
+need need VVP O
+to to TO O
+know know VV O
+the the DT O
+budget budget NN O
+of of IN O
+the the DT O
+movie movie NN O
+avatar avatar NN B-movie.name
+
+what what WP O
+was be VBD O
+avatar avatar NN B-movie.name
+'s 's POS O
+budget budget NN O
+
+how how WRB O
+much much RB O
+did do VVD O
+batman batman NN B-movie.name
+begins begin VVZ I-movie.name
+cost cost NN O
+
+what what WP O
+character character NN O
+did do VVD O
+tom tom NN B-actor.name
+hanks hank NNS I-actor.name
+play play VVP O
+in in IN O
+apollo apollo NN B-movie.name
+thirteen thirteen CD I-movie.name
+
+what what WP O
+was be VBD O
+kevin kevin NN B-actor.name
+james james NNS I-actor.name
+role role NN O
+in in IN O
+hitch hitch NN B-movie.name
+
+who who WP O
+directed direct VVD O
+the the DT O
+musical musical JJ O
+score score NN O
+in in IN O
+barfi barfi NNS B-movie.name
+
+where where WRB O
+was be VBD O
+footnote footnote NN B-movie.name
+made make VVN O
+
+where where WRB O
+was be VBD O
+trainspotting trainspotting VVG B-movie.name
+made make VVN O
+
+where where WRB O
+was be VBD O
+rocky rocky JJ B-movie.name
+four four CD I-movie.name
+filmed film VVD O
+
+in in IN O
+what what WP O
+country country NN O
+was be VBD O
+movie movie NN O
+made make VVN O
+
+in in IN O
+what what WP O
+country country NN O
+was be VBD O
+the the DT O
+movie movie NN O
+mirror mirror NN B-movie.name
+produced produce VVD O
+
+what what WP O
+year year NN O
+was be VBD O
+the the DT O
+movie movie NN O
+released release VVD O
+
+movie movie NN O
+little little JJ B-movie.name
+women woman NNS I-movie.name
+release release NN O
+date date NN O
+is be VBZ O
+when when WRB O
+
+when when WRB O
+was be VBD O
+life life NN B-movie.name
+is be VBZ I-movie.name
+beautiful beautiful JJ I-movie.name
+released release VVD O
+
+when when WRB O
+did do VVD O
+resident resident JJ B-movie.name
+evil evil NN I-movie.name
+come come VVN O
+out out RP O
+
+when when WRB O
+was be VBD O
+finding find VVG B-movie.name
+nemo nemo NN I-movie.name
+released release VVN O
+
+frankenstein frankenstein NN B-movie.name
+release release NN O
+date date NN O
+
+when when WRB O
+will will MD O
+paranormal paranormal JJ B-movie.name
+activity activity NN I-movie.name
+be be VB O
+released release VVN O
+
+what what WP O
+date date NN O
+was be VBD O
+avatar avatar NN B-movie.name
+released release VVN O
+
+release release NN O
+date date NN O
+of of IN O
+snow snow NN B-movie.name
+white white NN I-movie.name
+and and CC I-movie.name
+the the DT I-movie.name
+huntsman huntsman NN I-movie.name
+
+when when WRB O
+was be VBD O
+the the DT O
+movie movie NN O
+vulgaria vulgaria NN B-movie.name
+released release VVD O
+
+when when WRB O
+was be VBD O
+the the DT O
+movie movie NN O
+heroine heroine NN B-movie.name
+released release VVD O
+
+when when WRB O
+will will MD O
+iron iron VV B-movie.name
+man man NN I-movie.name
+3 3 LS I-movie.name
+be be VB O
+out out RP O
+in in IN O
+movie movie NN O
+theatres theatre NNS O
+
+who who WP O
+directed direct VVD O
+gone go VVN B-movie.name
+with with IN I-movie.name
+the the DT I-movie.name
+wind wind NN I-movie.name
+
+which which WDT O
+director director NN O
+directed direct VVD O
+a a DT B-movie.name
+hard hard JJ I-movie.name
+day day NN I-movie.name
+'s 's POS I-movie.name
+night night NN I-movie.name
+
+who who WP O
+directed direct VVD O
+a a DT B-movie.name
+hard hard JJ I-movie.name
+day day NN I-movie.name
+'s 's POS I-movie.name
+night night NN I-movie.name
+
+who who WP O
+was be VBD O
+the the DT O
+director director NN O
+of of IN O
+forest forest NN B-movie.name
+gump gump NN I-movie.name
+
+who who WP O
+is be VBZ O
+director director NN O
+of of IN O
+sleepless sleepless JJ B-movie.name
+in in IN I-movie.name
+seattle Seattle NN I-movie.name
+
+find find VV O
+the the DT O
+director director NN O
+of of IN O
+big big JJ B-movie.name
+
+who who WP O
+made make VVD O
+godzilla godzilla NN B-movie.name
+
+who who WP O
+directed direct VVD O
+gilda gilda NN B-movie.name
+
+who who WP O
+made make VVD O
+the the DT O
+movie movie NN O
+field field NN B-movie.name
+of of IN I-movie.name
+dreams dream NNS I-movie.name
+
+i i NNS O
+want want VVP O
+to to TO O
+know know VV O
+who who WP O
+directed direct VVD O
+finding find VVG B-movie.name
+nemo nemo NN I-movie.name
+
+who who WP O
+directed direct VVD O
+finding find VVG B-movie.name
+nemo nemo NN I-movie.name
+
+who who WP O
+made make VVD O
+hitch hitch NN B-movie.name
+
+who who WP O
+directed direct VVD O
+dirty dirty JJ B-movie.name
+dancing dancing NN I-movie.name
+
+twilight twilight NN B-movie.name
+was be VBD O
+directed direct VVN O
+by by IN O
+whom whom WP O
+
+director director NN O
+of of IN O
+the the DT O
+movie movie NN O
+hum hum NN B-movie.name
+tum tum NN I-movie.name
+
+look look VV O
+for for IN O
+the the DT O
+director director NN O
+of of IN O
+hum hum NN B-movie.name
+tum tum NN I-movie.name
+
+i i NNS O
+am be VBP O
+interested interested JJ O
+in in IN O
+who who WP O
+directed direct VVD O
+cabin cabin NN B-movie.name
+in in IN I-movie.name
+the the DT I-movie.name
+woods wood NNS I-movie.name
+
+search search NN O
+for for IN O
+the the DT O
+director director NN O
+of of IN O
+step step NN B-movie.name
+up up RB I-movie.name
+
+find find VV O
+the the DT O
+director director NN O
+of of IN O
+mask mask NN B-movie.name
+
+what what WP O
+kind kind NN O
+of of IN O
+movie movie NN O
+
+what what WP O
+genre genre NN O
+is be VBZ O
+the the DT B-movie.name
+hangover hangover NN I-movie.name
+
+genre genre NN O
+for for IN O
+while while IN B-movie.name
+you you PP I-movie.name
+were be VBD I-movie.name
+sleeping sleep VVG I-movie.name
+
+what what WP O
+are be VBP O
+the the DT O
+different different JJ O
+languages language NNS O
+this this DT O
+movie movie NN O
+come come VVN O
+in in IN O
+
+what what WP O
+language language NN O
+is be VBZ O
+the the DT O
+movie movie NN O
+in in IN O
+
+language language NN O
+of of IN O
+anna anna NN B-movie.name
+karinia karinia NN I-movie.name
+
+language language NN O
+of of IN O
+hamlet hamlet NN B-movie.name
+
+what what WP O
+language language NN O
+is be VBZ O
+la la DT O
+havre havre NN B-movie.name
+in in IN O
+
+what what WP O
+foreign foreign JJ O
+language language NN O
+is be VBZ O
+the the DT O
+movie movie NN O
+belle belle NN B-movie.name
+available available JJ O
+to to TO O
+view view VV O
+in in IN O
+
+can can MD O
+you you PP O
+tell tell VV O
+me me PP O
+the the DT O
+language language NN O
+of of IN O
+the the DT O
+movie movie NN O
+aankhen aankhen NN B-movie.name
+
+i i NP O
+would would MD O
+like like VV O
+to to TO O
+know know VV O
+names name NNS O
+of of IN O
+some some DT O
+indian Indian JJ B-movie.language
+movies movie NNS O
+
+japanese Japanese JJ B-movie.language
+movie movie NN O
+titles title NNS O
+
+movie movie NN O
+ratings rating NNS O
+
+richard richard NN B-producer.name
+lester lester NN I-producer.name
+produced produce VVD O
+what what WP O
+other other JJ O
+movies movie NNS O
+
+i i NP O
+would would MD O
+like like VV O
+info info NN O
+on on IN O
+the the DT O
+movie movie NN O
+life life NN B-movie.name
+is be VBZ I-movie.name
+beautiful beautiful JJ I-movie.name
+
+search search NN O
+for for IN O
+movies movie NNS O
+about about IN O
+dancing dancing NN B-movie.subject
+
+give give VV O
+me me PP O
+a a DT O
+list list NN O
+of of IN O
+will will NN B-actor.name
+ferrell ferrell NN I-actor.name
+films film NNS O
+
+what what WP O
+movies movie NNS O
+has have VHZ O
+will will NN B-actor.name
+ferrell ferrell NN I-actor.name
+been be VBN O
+in in IN O
+
+i i NNS O
+want want VVP O
+to to TO O
+see see VV O
+a a DT O
+polish polish NN B-movie.language
+movie movie NN O
+
+bings bings NNS O
+movie movie NN O
+page page NN O
+finding find VVG B-movie.name
+nemo nemo NN I-movie.name
+
+i i NP O
+would would MD O
+like like VV O
+to to TO O
+see see VV O
+a a DT O
+movie movie NN O
+with with IN O
+albert albert NN B-actor.name
+brooks brook NNS I-actor.name
+in in IN O
+it it PP O
+
+show show VV O
+me me PP O
+movies movie NNS O
+directed direct VVN O
+by by IN O
+sergio sergio NN B-director.name
+leone leone NN I-director.name
+
+find find VV O
+films film NNS O
+
+looking look VVG O
+for for IN O
+a a DT O
+drama drama NN B-movie.genre
+movie movie NN O
+
+show show VV O
+me me PP O
+a a DT O
+list list NN O
+of of IN O
+movies movie NNS O
+in in IN O
+english English NN B-movie.language
+
+find find VV O
+english English JJ B-movie.language
+movies movie NNS O
+
+looking look VVG O
+for for IN O
+a a DT O
+comedy comedy NN B-movie.genre
+movie movie NN O
+
+show show VV O
+me me PP O
+comedy comedy NN B-movie.genre
+movies movie NNS O
+
+find find VV O
+movies movie NNS O
+by by IN O
+producer producer NN O
+
+clint clint JJ B-actor.name
+eastwood eastwood NN I-actor.name
+movies movie NNS O
+
+find find VV O
+italian Italian JJ B-country.name
+movies movie NNS O
+
+italian Italian JJ B-country.name
+films film NNS O
+
+movies movie NNS O
+from from IN O
+spain spain NN B-country.name
+
+find find VV O
+romance romance NN B-movie.genre
+movies movie NNS O
+
+find find NN O
+movies movie NNS O
+is be VBZ O
+french French JJ B-movie.language
+
+show show VV O
+me me PP O
+movies movie NNS O
+produced produce VVN O
+in in IN O
+french French NNS B-movie.language
+
+show show VV O
+me me PP O
+movies movie NNS O
+in in IN O
+french French NNS B-movie.language
+
+show show VV O
+me me PP O
+information information NN O
+about about IN O
+movie movie NN O
+
+i i NNS O
+want want VVP O
+movies movie NNS O
+about about IN O
+9-11 @card@ CD B-movie.subject
+
+show show VV O
+me me PP O
+movies movie NNS O
+with with IN O
+time time NN B-movie.subject
+travel travel NN I-movie.subject
+themes theme NNS O
+
+time time NN B-movie.subject
+travel travel NN I-movie.subject
+movies movie NNS O
+
+show show VV O
+me me PP O
+movies movie NNS O
+about about IN O
+time time NN B-movie.subject
+travel travel NN I-movie.subject
+
+search search NN O
+for for IN O
+movies movie NNS O
+by by IN O
+language language NN O
+
+find find VV O
+me me PP O
+tamil Tamil NN B-movie.language
+movies movie NNS O
+
+list list VV O
+the the DT O
+hindi Hindi NN B-movie.language
+movies movie NNS O
+
+movies movie NNS O
+about about IN O
+bank bank NN B-movie.subject
+robberies robbery NNS I-movie.subject
+
+show show VV O
+me me PP O
+the the DT O
+movies movie NNS O
+acted act VVN O
+by by IN O
+bala bala NN B-actor.name
+krishna krishna NN I-actor.name
+
+show show VV O
+me me PP O
+korean Korean JJ B-movie.language
+language language NN I-movie.language
+movie movie NN O
+
+show show VV O
+me me PP O
+movies movie NNS O
+from from IN O
+japan japan NN B-country.name
+
+give give VV O
+me me PP O
+some some DT O
+names name NNS O
+of of IN O
+japanese Japanese JJ B-country.name
+movies movie NNS O
+
+show show VV O
+me me PP O
+japanese Japanese JJ B-country.name
+movies movie NNS O
+
+sort sort NN O
+in in IN O
+all all DT O
+japanese Japanese JJ B-country.name
+movies movie NNS O
+
+movies movie NNS O
+with with IN O
+vampires vampire NNS B-movie.subject
+
+list list VV O
+some some DT O
+paramount paramount JJ B-producer.name
+produced produce VVN O
+films film NNS O
+
+i i NNS O
+want want VVP O
+to to TO O
+see see VV O
+movies movie NNS O
+directed direct VVN O
+by by IN O
+michael Michael NP B-director.name
+bay bay NN I-director.name
+
+show show VV O
+me me PP O
+chinese Chinese JJ B-country.name
+movies movie NNS O
+
+watch watch NN O
+century century NN B-producer.name
+fox fox NN I-producer.name
+movies movie NNS O
+
+find find VV O
+movies movie NNS O
+by by IN O
+twentieth twentieth JJ B-producer.name
+century century NN I-producer.name
+fox fox NN I-producer.name
+
+i i NNS O
+want want VVP O
+to to TO O
+find find VV O
+pg-13 pg-13 JJ B-rating.name
+rated rate VVN O
+movies movie NNS O
+
+find find VV O
+a a DT O
+pg-13 pg-13 JJ B-rating.name
+movie movie NN O
+
+find find VV O
+me me PP O
+pg-13 pg-13 JJ B-rating.name
+movies movie NNS O
+
+listing list VVG O
+of of IN O
+g g NN B-rating.name
+movies movie NNS O
+
+look look VV O
+up up RP O
+movies movie NNS O
+with with IN O
+a a DT O
+g g NN B-rating.name
+rating rating NN O
+
+please please UH O
+select select VV O
+the the DT O
+option option NN O
+to to TO O
+search search VV O
+for for IN O
+g g NN B-rating.name
+rated rate VVN O
+movies movie NNS O
+
+show show VV O
+all all DT O
+movies movie NNS O
+directed direct VVN O
+by by IN O
+ron ron JJ B-director.name
+howard howard NN I-director.name
+
+find find VV O
+steven steven JJ B-director.name
+spielberg spielberg NN I-director.name
+movies movie NNS O
+
+show show VV O
+steven steven JJ B-director.name
+spielberg spielberg NN I-director.name
+movies movie NNS O
+
+can can MD O
+you you PP O
+find find VV O
+movies movie NNS O
+with with IN O
+steven steven JJ B-director.name
+spielberg spielberg NN I-director.name
+
+can can MD O
+you you PP O
+please please VV O
+search search NN O
+for for IN O
+movies movie NNS O
+by by IN O
+steven steven JJ B-director.name
+spielberg spielberg NN I-director.name
+
+find find VV O
+some some DT O
+musical musical JJ B-movie.genre
+movies movie NNS O
+
+looking look VVG O
+for for IN O
+a a DT O
+musical musical JJ B-movie.genre
+movie movie NN O
+
+producer producer NN O
+tom tom NN B-producer.name
+hanks hank NNS I-producer.name
+movies movie NNS O
+
+show show NN O
+movies movie NNS O
+directed direct VVN O
+by by IN O
+oliver olive JJR B-director.name
+stone stone NN I-director.name
+
+show show NN O
+movies movie NNS O
+charlie charlie NN B-actor.name
+sheen sheen NN I-actor.name
+
+is be VBZ O
+this this DT O
+movie movie NN O
+a a DT O
+romance romance NN B-movie.genre
+
+home home RB O
+this this DT O
+movie movie NN O
+is be VBZ O
+in in IN O
+english English NN B-movie.language
+
+list list NN O
+movies movie NNS O
+directed direct VVN O
+by by IN O
+james james NNS B-director.name
+cameron cameron NN I-director.name
+
+find find VV O
+me me PP O
+more more RBR O
+about about IN O
+finding find VVG B-movie.name
+nemo nemo NN I-movie.name
+
+i i NP O
+would would MD O
+like like VV O
+to to TO O
+see see VV O
+finding find VVG B-movie.name
+nemo Nemo NP I-movie.name
+'s 's POS O
+page page NN O
+
+synopsis synopsis NN O
+for for IN O
+finding find VVG B-movie.name
+nemo nemo NN I-movie.name
+
+run run VV O
+a a DT O
+search search NN O
+for for IN O
+the the DT B-movie.name
+campaign campaign NN I-movie.name
+
+kristen Kristen NP B-actor.name
+stewart Stewart NP I-actor.name
+top top JJ O
+movies movie NNS O
+
+list list NN O
+movie movie NN O
+info info NN O
+kristen kristen NN B-actor.name
+stewart stewart NN I-actor.name
+
+find find VV O
+movie movie NN O
+info info NN O
+kristenn kristenn NP B-actor.name
+stewart Stewart NP I-actor.name
+
+what what WP O
+movies movie NNS O
+has have VHZ O
+charles charles NNS B-director.name
+vidor vidor NN I-director.name
+directed direct VVD O
+
+kareena kareena NP B-actor.name
+'s 's POS O
+movies movie NNS O
+
+woody woody JJ B-director.name
+movies movie NNS O
+
+get get VV O
+german german JJ B-movie.language
+language language NN I-movie.language
+films film NNS O
+
+what what WP O
+are be VBP O
+all all RB O
+the the DT O
+movies movie NNS O
+played play VVN O
+in in IN O
+by by IN O
+chrisian chrisian JJ B-actor.name
+bale bale NN I-actor.name
+
+movie movie NN O
+with with IN O
+brad brad NN B-actor.name
+pitt pitt NN I-actor.name
+
+what what WP O
+movie movie NN O
+brad brad NN B-actor.name
+pitt pitt NN I-actor.name
+in in IN O
+
+are be VBP O
+there there RB O
+any any DT O
+movies movie NNS O
+that that WDT O
+are be VBP O
+rated rate VVN O
+r r NN B-rating.name
+
+what what WP O
+other other JJ O
+videos video NNS O
+does do VVZ O
+the the DT O
+country country NN O
+norway norway NN B-country.name
+have have VHP O
+
+please please UH O
+make make VV O
+a a DT O
+list list NN O
+of of IN O
+movies movie NNS O
+that that WDT O
+have have VHP O
+been be VBN O
+made make VVN O
+in in IN O
+spanish Spanish NN B-movie.language
+
+show show VV O
+me me PP O
+movies movie NNS O
+that that WDT O
+are be VBP O
+in in IN O
+spanish Spanish NN B-movie.language
+
+show show VV O
+me me PP O
+movies movie NNS O
+that that WDT O
+are be VBP O
+about about RB O
+scary scary JJ B-movie.subject
+zombies zombie NNS I-movie.subject
+
+give give VV O
+me me PP O
+a a DT O
+list list NN O
+of of IN O
+zombie zombie NN B-movie.subject
+movies movie NNS O
+
+show show VV O
+me me PP O
+zombie zombie NN B-movie.subject
+movies movie NNS O
+
+find find VV O
+me me PP O
+a a DT O
+movie movie NN O
+with with IN O
+zombies zombie NNS B-movie.subject
+
+display display NN O
+movies movie NNS O
+of of IN O
+zombies zombie NNS B-movie.subject
+
+get get VV O
+movies movie NNS O
+about about IN O
+zombies zombie NNS B-movie.subject
+
+what what WP O
+movies movie NNS O
+are be VBP O
+directed direct VVN O
+by by IN O
+ridley Ridley NP B-director.name
+scott Scott NP I-director.name
+
+i i NNS O
+want want VVP O
+to to TO O
+watch watch VV O
+a a DT O
+german german JJ B-country.name
+movie movie NN O
+
+what what WP O
+movies movie NNS O
+did do VVD O
+harry harry VV B-producer.name
+weinstein weinstein NN I-producer.name
+produce produce NN O
+
+i i NP O
+would would MD O
+like like VV O
+to to TO O
+get get VV O
+some some DT O
+information information NN O
+about about IN O
+the the DT O
+movie movie NN O
+star star NN B-movie.name
+wars war NNS I-movie.name
+: : : I-movie.name
+episode episode NN I-movie.name
+four four CD I-movie.name
+- - : I-movie.name
+a a DT I-movie.name
+new new JJ I-movie.name
+hope hope NN I-movie.name
+
+what what WP O
+is be VBZ O
+full full JJ O
+name name NN O
+of of IN O
+star star NN B-movie.name
+wars war NNS I-movie.name
+iv iv NN I-movie.name
+
+i i NP O
+would would MD O
+like like VV O
+to to TO O
+get get VV O
+detailed detailed JJ O
+information information NN O
+about about IN O
+the the DT O
+movie movie NN O
+in in IN B-movie.name
+july july RB I-movie.name
+
+show show VV O
+me me PP O
+hathaway hathaway NN B-actor.name
+'s 's POS O
+recent recent JJ O
+movies movie NNS O
+
+list list NN O
+of of IN O
+movies movie NNS O
+starring star VVG O
+angelina angelina NN B-actor.name
+jolie jolie NN I-actor.name
+
+funny funny JJ B-movie.genre
+kids kid NNS B-rating.name
+movies movie NNS O
+
+i i NNS O
+want want VVP O
+to to TO O
+look look VV O
+up up RP O
+information information NN O
+about about IN O
+the the DT O
+movie movie NN O
+hotel hotel NN B-movie.name
+transylvania transylvania NN I-movie.name
+
+what what WP O
+has have VHZ O
+will will NN B-actor.name
+ferrell ferrell NN I-actor.name
+done do VVN O
+
+list list NN O
+ice ice NN B-movie.subject
+skating skating NN I-movie.subject
+movies movie NNS O
+please please VVP O
+
+show show VV O
+me me PP O
+more more JJR O
+details detail NNS O
+for for IN O
+the the DT O
+movie movie NN O
+house house NN B-movie.name
+at at IN I-movie.name
+the the DT I-movie.name
+end end NN I-movie.name
+of of IN I-movie.name
+the the DT I-movie.name
+street street NN I-movie.name
+
+movies movie NNS O
+starring star VVG O
+tom tom NN B-actor.name
+cruise cruise NN I-actor.name
+
+show show VV O
+me me PP O
+all all DT O
+movies movie NNS O
+tom tom NN B-actor.name
+cruise cruise NN I-actor.name
+has have VHZ O
+been be VBN O
+in in IN O
+
+movies movie NNS O
+about about IN O
+immigration immigration NN B-movie.subject
+
+dawn dawn NN B-movie.name
+of of IN I-movie.name
+the the DT I-movie.name
+dead dead JJ I-movie.name
+movie movie NN O
+information information NN O
+
+show show VV O
+me me PP O
+movies movie NNS O
+rated rate VVN O
+pg pg NN B-rating.name
+
+movies movie NNS O
+with with IN O
+pg pg NN B-rating.name
+rating rating NN O
+
+i i NNS O
+want want VVP O
+to to TO O
+see see VV O
+movies movie NNS O
+that that WDT O
+are be VBP O
+rated rate VVN O
+pg pg NN B-rating.name
+
+i i NP O
+would would MD O
+like like VV O
+to to TO O
+watch watch VV O
+an an DT O
+alfred Alfred NP B-director.name
+hitchcock hitchcock NN I-director.name
+movie movie NN O
+
+what what WP O
+new new JJ O
+movies movie NNS O
+does do VVZ O
+lionsgate lionsgate NNS B-producer.name
+have have VHP O
+out out RB O
+
+show show VV O
+a a DT O
+list list NN O
+of of IN O
+recent recent JJ O
+releases release NNS O
+that that WDT O
+are be VBP O
+rated rate VVN O
+pg pg NN B-rating.name
+
+what what WP O
+are be VBP O
+some some DT O
+recent recent JJ O
+released release VVN O
+pg pg NN B-rating.name
+movies movie NNS O
+
+show show VV O
+me me PP O
+high high RB O
+grossing gross VVG O
+movies movie NNS O
+
+please please VV O
+search search NN O
+for for IN O
+movies movie NNS O
+about about IN O
+god god NN B-movie.subject
+
+show show VV O
+me me PP O
+all all DT O
+movies movie NNS O
+produced produce VVN O
+by by IN O
+ray ray NN B-producer.name
+stark stark JJ I-producer.name
+
+what what WP O
+movie movie NN O
+has have VHZ O
+albert albert NN B-actor.name
+brooks brook NNS I-actor.name
+done do VVN O
+lately lately RB O
+
+what what WP O
+new new JJ O
+movies movie NNS O
+are be VBP O
+playing play VVG O
+with with IN O
+rating rating NN O
+of of IN O
+pg pg NP B-rating.name
+thirteen thirteen CD I-rating.name
+
+have have VHP O
+any any DT O
+new new JJ O
+movies movie NNS O
+by by IN O
+twentieth twentieth JJ B-producer.name
+century century NN I-producer.name
+fox fox NN I-producer.name
+
+what what WP O
+was be VBD O
+woody woody JJ B-director.name
+allen allen NN I-director.name
+'s 's POS O
+last last JJ O
+movie movie NN O
+
+was be VBD O
+life life NN B-movie.name
+is be VBZ I-movie.name
+beautiful beautiful JJ I-movie.name
+made make VVN O
+in in IN O
+italy italy RB B-country.name
+
+current current JJ O
+movies movie NNS O
+rated rate VVN O
+g g NN B-rating.name
+
+find find VV O
+me me PP O
+info info NN O
+on on IN O
+emma emma NN B-person.name
+watson watson NN I-person.name
+
+i i NNS O
+need need VVP O
+a a DT O
+list list NN O
+of of IN O
+actors actor NNS O
+
+i i NNS O
+need need VVP O
+to to TO O
+know know VV O
+more more JJR O
+about about IN O
+the the DT O
+producer producer NN O
+ray ray NN B-person.name
+stark stark JJ I-person.name
+
+find find VV O
+the the DT O
+director director NN O
+andrew andrew NN B-person.name
+stanton stanton NN I-person.name
+
+bio bio NN O
+on on IN O
+will will NN B-person.name
+ferrell ferrell NN I-person.name
+
+i i NNS O
+want want VVP O
+to to TO O
+see see VV O
+will will NN B-person.name
+ferrell ferrell NN I-person.name
+details detail NNS O
+
+show show VV O
+me me PP O
+a a DT O
+bio bio NN O
+of of IN O
+will will NN B-person.name
+ferrell ferrell NN I-person.name
+
+who who WP O
+is be VBZ O
+will will NN B-person.name
+ferrell ferrell NN I-person.name
+
+exhibit exhibit VV O
+all all DT O
+relevant relevant JJ O
+information information NN O
+about about IN O
+the the DT O
+director director NN O
+steven steven JJ B-person.name
+spielberg spielberg NN I-person.name
+
+show show VV O
+all all DT O
+relevant relevant JJ O
+information information NN O
+about about IN O
+the the DT O
+director director NN O
+steven steven JJ B-person.name
+spielberg spielberg NN I-person.name
+
+who who WP O
+is be VBZ O
+steven steven JJ B-person.name
+spielberg spielberg NN I-person.name
+
+who who WP O
+is be VBZ O
+hitchcock hitchcock NN B-person.name
+
+what what WP O
+is be VBZ O
+the the DT O
+name name NN O
+of of IN O
+the the DT O
+company company NN O
+that that WDT O
+produced produce VVD O
+the the DT O
+movie movie NN O
+inception inception NN B-movie.name
+
+who who WP O
+produced produce VVD O
+hitch hitch NN B-movie.name
+
+producer producer NN O
+of of IN O
+heroine heroine NN B-movie.name
+
+can can MD O
+you you PP O
+tell tell VV O
+me me PP O
+who who WP O
+produced produce VVD O
+the the DT O
+movie movie NN O
+avatar avatar NN B-movie.name
+
+who who WP O
+produced produce VVD O
+avatar avatar NN B-movie.name
+
+who who WP O
+produced produce VVD O
+avatar avatar NN B-movie.name
+
+who who WP O
+produced produce VVD O
+avatar avatar NN B-movie.name
+
+who who WP O
+is be VBZ O
+listed list VVN O
+as as IN O
+producer producer NN O
+of of IN O
+grease grease NN B-movie.name
+
+look look VV O
+for for IN O
+information information NN O
+about about IN O
+lionsgate lionsgate NNS B-producer.name
+
+show show NN O
+lionsgate lionsgate NNS B-producer.name
+
+who who WP O
+produced produce VVD O
+the the DT O
+movie movie NN O
+twilight twilight NN B-movie.name
+
+search search NN O
+mgm mgm NN B-producer.name
+studios studio NNS I-producer.name
+
+who who WP O
+produced produce VVD O
+this this DT O
+movie movie NN O
+
+look look VV O
+up up RP O
+the the DT O
+producer producer NN O
+of of IN O
+freedom freedom NN B-movie.name
+writers writer NNS I-movie.name
+
+show show NN O
+producers producer NNS O
+who who WP O
+work work VVP O
+for for IN O
+miramax miramax NN B-producer.name
+
+is be VBZ O
+hotel hotel NN B-movie.name
+transylavania transylavania NN I-movie.name
+good good JJ O
+for for IN O
+adults adult NNS O
+
+what what WP O
+rating rating NN O
+is be VBZ O
+freedom freedom NN B-movie.name
+writers writer NNS I-movie.name
+
+show show NN O
+rating rating NN O
+for for IN O
+the the DT O
+film film NN O
+avengers avenger NNS I-movie.name
+
+show show NN O
+movie movie NN O
+ratings rating NNS O
+for for IN O
+us us PP B-country.name
+movie movie NN O
+looper looper NN B-movie.name
+
+can can MD O
+you you PP O
+find find VV O
+out out RP O
+what what WP O
+the the DT O
+movie movie NN O
+dredd dredd NN B-movie.name
+is be VBZ O
+rated rate VVN O
+
+what what WP O
+were be VBD O
+et et NP B-movie.name
+'s 's POS O
+revenues revenue NNS O
+
+what what WP O
+were be VBD O
+the the DT O
+gross gross JJ O
+receipts receipt NNS O
+for for IN O
+the the DT B-movie.name
+avengers avenger NNS I-movie.name
+
+what what WP O
+did do VVD O
+the the DT O
+movie movie NN O
+finding find VVG B-movie.name
+nemo nemo NN I-movie.name
+gross gross JJ O
+
+who who WP O
+starred star VVD O
+in in IN O
+three three CD B-movie.name
+'s 's POS I-movie.name
+company company NN I-movie.name
+
+what what WP O
+was be VBD O
+the the DT O
+budget budget NN O
+for for IN O
+the the DT O
+movie movie NN O
+epic epic NN B-movie.name
+
+what what WP O
+was be VBD O
+the the DT O
+total total JJ O
+cost cost NN O
+of of IN O
+production production NN O
+for for IN O
+looper looper NN B-movie.name
+
+show show VV O
+me me PP O
+the the DT O
+budget budget NN O
+for for IN O
+expendables expendable NNS B-movie.name
+2 2 CD I-movie.name
+
+where where WRB O
+did do VVD O
+they they PP O
+do do VVP O
+les les FW B-movie.name
+mes mes FW I-movie.name
+
+what what WP O
+country country NN O
+was be VBD O
+les les FW B-movie.name
+miserables miserables NNS I-movie.name
+made make VVD O
+
+what what WP O
+is be VBZ O
+the the DT O
+movie movie NN O
+release release NN O
+date date NN O
+for for IN O
+omg omg JJ B-movie.name
+oh oh UH I-movie.name
+my my PP$ I-movie.name
+god god NN I-movie.name
+
+when when WRB O
+was be VBD O
+resident resident NN B-movie.name
+evil evil JJ I-movie.name
+three three CD I-movie.name
+d d SYM I-movie.name
+released release VVN O
+
+who who WP O
+directed direct VVD O
+return return NN B-movie.name
+of of IN I-movie.name
+the the DT I-movie.name
+jedi jedi NN I-movie.name
+
+show show VV O
+me me PP O
+names name NNS O
+of of IN O
+movies movie NNS O
+in in IN O
+which which WDT O
+indian Indian JJ B-actor.nationality
+actor actor NN O
+dilip dilip NN B-actor.name
+kumar kumar NN I-actor.name
+acted act VVD O
+
+i i NNS O
+need need VVP O
+to to TO O
+find find VV O
+names name NNS O
+of of IN O
+some some DT O
+movies movie NNS O
+on on IN O
+religious religious JJ B-movie.subject
+issues issue NNS I-movie.subject
+
+show show VV O
+me me PP O
+all all DT O
+brad brad NN B-director.name
+pitt pitt NN I-director.name
+directed direct VVD O
+movies movie NNS O
+
+show show NN O
+movies movie NNS O
+directed direct VVN O
+by by IN O
+greenberg Greenberg NP B-director.name
+
+show show VV O
+me me PP O
+the the DT O
+movies movie NNS O
+directed direct VVN O
+by by IN O
+r r NN B-director.name
+b b NN I-director.name
+choudary choudary NN I-director.name
+
+what what WP O
+is be VBZ O
+ray ray NN B-director.name
+stark stark RB I-director.name
+'s 's POS O
+current current JJ O
+movie movie NN O
+he he PP O
+directed direct VVD O
+
+what what WP O
+other other JJ O
+movies movie NNS O
+did do VVD O
+ray ray NN B-director.name
+stark stark RB I-director.name
+do do VVP O
+
+what what WP O
+is be VBZ O
+the the DT O
+release release NN O
+date date NN O
+for for IN O
+the the DT O
+movie movie NN O
+heroine heroine NN B-movie.release_date
+
+movies movie NNS O
+in in IN O
+september September NN B-movie.release_date
+twenty twenty CD I-movie.release_date
+twelve twelve NN I-movie.release_date
+
+movies movie NNS O
+released release VVN O
+in in IN O
+september September NN B-movie.release_date
+twenty twenty CD I-movie.release_date
+twelve twelve NN I-movie.release_date
+
+what what WP O
+are be VBP O
+some some DT O
+new new JJ O
+movie movie NN O
+releases release NNS O
+for for IN O
+september September NN B-movie.release_date
+twenty twenty CD I-movie.release_date
+twelve twelve NN I-movie.release_date
+
+what what WP O
+movies movie NNS O
+came come VVD O
+out out RP O
+in in IN O
+september September NN B-movie.release_date
+
+show show VV O
+all all DT O
+movies movie NNS O
+made make VVN O
+in in IN O
+twenty twenty CD B-movie.release_date
+eleven eleven NN I-movie.release_date
+with with IN O
+g g NN B-rating.name
+rating rating NN O
+
+show show VV O
+me me PP O
+brittney brittney NN B-actor.name
+murphey murphey NN I-actor.name
+movies movie NNS O
+
+list list NN O
+only only JJ O
+jason jason NN B-actor.name
+statham statham NN I-actor.name
+movies movie NNS O
+
+what what WP O
+movies movie NNS O
+did do VVD O
+kelly kelly JJ B-actor.name
+brooke brooke NNS I-actor.name
+do do VVP O
+
+i i NNS O
+want want VVP O
+to to TO O
+see see VV O
+films film NNS O
+involving involve VVG O
+cars car NNS B-movie.subject
+
+show show VV O
+me me PP O
+movies movie NNS O
+about about IN O
+classic classic JJ B-movie.subject
+cars car NNS I-movie.subject
+
+find find VV O
+movies movie NNS O
+about about IN O
+classic classic JJ B-movie.subject
+cars car NNS I-movie.subject
+
+show show NN O
+movies movie NNS O
+on on IN O
+gardening gardening NN B-movie.subject
+
+movies movie NNS O
+about about IN O
+gardens garden NNS B-movie.subject
+
+find find VV O
+movies movie NNS O
+about about IN O
+haunting haunting NN B-movie.subject
+
+the the DT O
+movie movie NN O
+that that WDT O
+has have VHZ O
+a a DT O
+kid kid NN B-movie.subject
+who who WP I-movie.subject
+ages age VVZ I-movie.subject
+into into IN I-movie.subject
+a a DT I-movie.subject
+man man NN I-movie.subject
+
+period period NN B-movie.subject
+movies movie NNS O
+
+did do VVD O
+albert albert NN B-producer.name
+ruddy ruddy JJ I-producer.name
+produce produce VVP O
+all all DT O
+of of IN O
+the the DT B-movie.name
+godfather godfather NN I-movie.name
+movies movie NNS O
+
+are be VBP O
+there there RB O
+any any DT O
+recent recent JJ O
+versions version NNS O
+of of IN O
+gone go VVN B-movie.name
+with with IN I-movie.name
+the the DT I-movie.name
+wind wind NN I-movie.name
+
+is be VBZ O
+this this DT O
+movie movie NN O
+in in IN O
+turkish Turkish JJ B-movie.language
+language language NN I-movie.language
+
+find find VV O
+me me PP O
+information information NN O
+about about IN O
+the the DT O
+first first JJ O
+star star NN B-movie.name
+wars war NNS I-movie.name
+
+search search NN O
+for for IN O
+information information NN O
+about about IN O
+american American JJ B-country.name
+movies movie NNS O
+
+alberts albert NNS B-person.name
+family family NN O
+
+show show VV O
+british British JJ B-person.nationality
+actor actor NN O
+jason jason NN B-person.name
+stathon stathon NN I-person.name
+
+name name NN O
+of of IN O
+company company NN O
+produced produce VVD O
+forrest forrest NN B-movie.name
+gump gump NN I-movie.name
+
+find find VV O
+the the DT O
+producer producer NN O
+of of IN O
+a a DT B-movie.name
+mom mom NN I-movie.name
+for for IN I-movie.name
+christmas christmas NNS I-movie.name
+
+name name NN O
+of of IN O
+company company NN O
+that that WDT O
+produced produce VVD O
+the the DT B-movie.name
+great great JJ I-movie.name
+debaters debater NNS I-movie.name
+
+how how WRB O
+much much JJ O
+revenue revenue NN O
+did do VVD O
+bourne bourne NN B-movie.name
+identity identity NN I-movie.name
+make make VV O
+
+revenue revenue NN O
+for for IN O
+breaking break VVG B-movie.name
+dawn dawn NN I-movie.name
+
+what what WP O
+was be VBD O
+the the DT O
+box box NN O
+office office NN O
+gross gross JJ O
+in in IN O
+hitch hitch NN B-movie.name
+
+what what WP O
+was be VBD O
+the the DT O
+profit profit NN O
+margin margin NN O
+of of IN O
+iron iron NN B-movie.name
+man man NN I-movie.name
+
+what what WP O
+were be VBD O
+the the DT O
+box box NN O
+office office NN O
+sales sale NNS O
+for for IN O
+looper looper NN B-movie.name
+
+how how WRB O
+much much JJ O
+money money NN O
+did do VVD O
+shrek shrek RB B-movie.name
+bring bring VV O
+in in IN O
+
+what what WP O
+were be VBD O
+the the DT O
+earnings earning NNS O
+from from IN O
+signs sign NNS B-movie.name
+
+snow snow NN B-movie.name
+white white NN I-movie.name
+and and CC I-movie.name
+the the DT I-movie.name
+huntsman huntsman NN I-movie.name
+revenue revenue NN O
+
+how how WRB O
+much much JJ O
+revenue revenue NN O
+did do VVD O
+cabin cabin NN B-movie.name
+in in IN I-movie.name
+the the DT I-movie.name
+woods wood NNS I-movie.name
+bring bring VVP O
+in in IN O
+
+how how WRB O
+much much RB O
+did do VVD O
+trouble trouble NN B-movie.name
+with with IN I-movie.name
+the the DT I-movie.name
+curve curve NN I-movie.name
+make make VV O
+in in IN O
+the the DT O
+box box NN O
+office office NN O
+
+show show VV O
+all all DT O
+russian Russian JJ B-country.name
+movies movie NNS O
+made make VVN O
+in in IN O
+the the DT O
+last last JJ B-movie.release_date
+five five CD I-movie.release_date
+years year NNS I-movie.release_date
+
+i i NP O
+'d will MD O
+like like VV O
+to to TO O
+see see VV O
+a a DT O
+movie movie NN O
+that that WDT O
+was be VBD O
+filmed film VVN O
+in in IN O
+africa africa NN B-country.name
+
+find find VV O
+movie movie NN O
+based base VVN O
+on on IN O
+criteria criterion NNS O
+
+can can MD O
+i i NNS O
+buy buy VV O
+this this DT O
+movie movie NN O
+
+feature feature NN O
+films film NNS O
+
+are be VBP O
+there there RB O
+sub-titles sub-titles NNS O
+
+i i NNS O
+want want VVP O
+to to TO O
+watch watch VV O
+movies movie NNS O
+like like IN O
+finding find VVG B-movie.name
+nemo nemo NN I-movie.name
+
+what what WP O
+are be VBP O
+some some DT O
+movies movie NNS O
+like like IN O
+the the DT B-movie.name
+campaign campaign NN I-movie.name
+
+herbs herb NNS O
+and and CC O
+health health NN O
+
+houses house NNS O
+on on IN O
+streets street NNS O
+
+bald bald JJ O
+male male JJ O
+actors actor NNS O
+
+england england NN B-country.name
+will will MD O
+you you PP O
+make make VV O
+movie movie NN O
+about about IN O
+the the DT O
+life life NN O
+of of IN O
+prince prince NN B-person.name
+william william NNS I-person.name
+and and CC O
+harry harry VVP B-person.name
+'s 's POS O
+life life NN O
+
+goto goto NN O
+greyscale greyscale NN O
+
+if if IN O
+you you PP O
+could could MD O
+descrbe descrbe VV O
+your your PP$ O
+movie movie NN O
+in in IN O
+one one CD O
+word word NN O
+what what WP O
+would would MD O
+it it PP O
+be be VB O
+
+if if IN O
+you you PP O
+werent werent NN O
+the the DT O
+director director NN O
+
+look look NN O
+for for IN O
+information information NN O
+about about IN O
+parental parental JJ O
+guidance guidance NN O
+
+r r SYM B-rating.name
+rating rating NN O
+means mean VVZ O
+sex sex NN O
+or or CC O
+nudity nudity NN O
+
+sb sb NN O
+love love NN O
+life life NN O
+
+show show VVP O
+me me PP O
+all all PDT O
+the the DT O
+information information NN O
+highlighted highlight VVN O
+in in IN B-movie.name
+orange orange NN I-movie.name
+
+show show VV O
+me me PP O
+information information NN O
+in in IN B-movie.name
+orange orange NN I-movie.name
+
+what what WP O
+does do VVZ O
+a a DT O
+g g NN B-rating.name
+rating rating NN O
+mean mean NN O
+
+what what WP O
+types type NNS O
+of of IN O
+movies movie NNS O
+are be VBP O
+there there RB O
+
+why why WRB O
+is be VBZ O
+this this DT O
+movie movie NN O
+rated rate VVN O
+pg pg NN B-rating.name
+
+would would MD O
+you you PP O
+try try VV O
+to to TO O
+make make VV O
+a a DT O
+sequal sequal NN O
+
+find find VV O
+all all DT O
+selected selected JJ O
+info info NN O
+
+find find VV O
+highlighted highlight VVN O
+info info NN O
+
+wilford Wilford NP B-person.name
+
+on on IN B-movie.name
+july july RB I-movie.name
+
+what what WP O
+actress actress NN O
+played play VVD O
+mother mother NN B-character.name
+in in IN O
+mirror mirror NN B-movie.name
+by by IN O
+tarkovsky tarkovsky NP B-director.name
+
+who who WP O
+played play VVD O
+the the DT B-character.name
+mother mother NN I-character.name
+in in IN O
+steel steel NN B-movie.name
+magnolias magnolia NNS I-movie.name
+
+what what WP O
+is be VBZ O
+the the DT O
+name name NN O
+of of IN O
+the the DT O
+red red JJ B-character.name
+ranger ranger NN I-character.name
+guy guy NN I-character.name
+in in IN O
+power power NN B-movie.name
+rangers ranger NNS I-movie.name
+
+what what WP O
+awards award NNS O
+did do VVD O
+this this DT O
+film film NN O
+receive receive VV O
+
+show show NN O
+richard richard NN B-person.name
+lester lester NN I-person.name
+'s 's POS O
+awards award NNS O
+
+release release NN O
+date date NN O
+
+show show VV O
+me me PP O
+videos video NNS O
+of of IN O
+spielberg spielberg NN B-director.name
+movies movie NNS O
+
+what what WP O
+are be VBP O
+the the DT O
+top top JJ O
+five five CD O
+british British JJ B-country.name
+dramas dramas NN B-movie.genre
+
+tell tell VV O
+me me PP O
+some some DT O
+of of IN O
+the the DT O
+best well RBS O
+nc-17 nc-17 JJ B-rating.name
+movies movie NNS O
+
+show show VV O
+me me PP O
+movie movie NN O
+trailers trailer NNS O
+
+scary scary JJ O
+movies movie NNS O
+by by IN O
+this this DT O
+producer producer NN O
+
+find find VV O
+shows show NNS O
+about about IN O
+cars car NNS B-movie.subject
+
+show show VV O
+all all DT O
+movies movie NNS O
+by by IN O
+oscar oscar NN B-award.ceremony
+winning win VVG O
+directors director NNS O
+for for IN O
+the the DT O
+seventies seventy NNS B-movie.release_date
+
+what what WP O
+movies movie NNS O
+did do VVD O
+meryl meryl NN B-person.name
+streep streep NNS I-person.name
+win win VVP O
+her her PP$ O
+oscars oscar NNS B-award.ceremony
+
+show show VV O
+me me PP O
+images image NNS O
+of of IN O
+will will NN B-person.name
+ferrell ferrell NN I-person.name
+
+what what WP O
+are be VBP O
+the the DT O
+reviews review NNS O
+for for IN O
+finding find VVG B-movie.name
+nemo nemo NN I-movie.name
+
+reviews review NNS O
+for for IN O
+in in IN B-movie.name
+july July NN I-movie.name
+
+reviews review NNS O
+for for IN O
+the the DT O
+movie movie NN O
+the the DT B-movie.name
+campaign campaign NN I-movie.name
+
+is be VBZ O
+star star NN B-movie.name
+wars war NNS I-movie.name
+four four CD I-movie.name
+any any DT O
+good good NN O
+
+where where WRB O
+is be VBZ O
+hotel hotel NN B-movie.name
+transylvania transylvania NN I-movie.name
+shown show VVN O
+
+where where WRB O
+is be VBZ O
+the the DT O
+movie movie NN O
+in in IN B-movie.name
+july july RB I-movie.name
+playing play VVG O
+
+show show VV O
+me me PP O
+the the DT O
+trailer trailer NN O
+for for IN O
+the the DT B-movie.name
+campaign campaign NN I-movie.name
+movie movie NN O
+
+play play VV O
+the the DT O
+trailer trailer NN O
+for for IN O
+the the DT B-movie.name
+campaign campaign NN I-movie.name
+
