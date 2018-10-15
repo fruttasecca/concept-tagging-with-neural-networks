@@ -20,7 +20,7 @@ what arguments you are currently not providing, and what you should/could provid
   - WFSTs, requirements: opengrm, openfst
   - SVMs, requirements: YAMCHA
   - CRFs, requirements: pycrfsuite
-  - neural models, requirements: pytorch
+  - neural models, requirements: pytorch (0.4)
 
 ![Alt text](/struct.png?raw=true "structure of the repository")
 
@@ -77,7 +77,7 @@ file to make YAMCHA use those features. The way this works is because of YAMCHA;
 documentation if you have doubts.
 
 ```sh
-./movies_run.py ../../data/atis/crf/train_dev.txt ../../data/atis/crf/test.txt
+./movies_run.py ../../data/movies/crf/train_dev.txt ../../data/movies/crf/test.txt
 ./movies_run.py ../../data/movies/crf/train_dev.txt ../../data/movies/crf/test.txt ../../data/movies/w2v_trimmed.pickle ../../data/movies/c2v_20.pickle
 ```
 To run the CRF script either without embeddings or with embeddings. Train and test 
@@ -122,3 +122,15 @@ and movies are already there, in their respective data directories.
 
 
 
+##### Update
+The revised version of the repository contains the revised version of the paper and
+the folds (10) used for significance testing, they can be found in the atis data directory
+or in the movies data directory.
+
+The folds have been obtained from the training data by using sklearn KFold, seeded with 1337;
+to perform runs involving neural nets, pytorch has been seeded with 999 and set to deterministic.
+To compute the Welch's t-test sklearn has been used.
+
+Note that based
+on the pytorch or CUDA version you might have some different results, this is not caused
+by the code in this project but stems from how pytorch and CUDA currently interact.
