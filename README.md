@@ -1,3 +1,8 @@
+:point_down::point_down::point_down::point_down::point_down::mega:  
+If you run into any trouble/problem feel free to contact me
+at jacopo.gobbi@studenti.unitn.it
+
+
 # Concept tagging with WFSTs, SVMs, CRFs, and neural networks
 This is the repository for the paper "Concept Tagging for Natural Language Understanding: Two Decadelong Algorithm Development", http://arxiv.org/abs/1807.10661.
 Please refer to this paper when using this code for your papers or reports.
